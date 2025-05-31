@@ -1,0 +1,299 @@
+﻿@using System.Web;
+@using ThietBiDienTu_2.Areas.Admin.ViewModels
+@model X.PagedList.IPagedList<TbFixAndCheck>
+
+<script>
+    
+    $(document).ready(function () {
+        var pageChoosenView = '@ViewBag.Pagechoosen';
+        var searchStringView = '@Html.Raw(HttpUtility.JavaScriptStringEncode(ViewBag.searchString))';
+        var makhoView = '@ViewBag.makho';
+        var pageView = '@ViewBag.page';
+        var checkedView = '@ViewBag.check';
+        $('#btnSearch_AddDevices').click(function () {
+            searchStringView = $('#searchString_AddDevices').val();
+            getToFilter();
+        });
+
+        $('#selectKho').val(makhoView);
+        $('#searchString_AddDevices').val(searchStringView);
+        if(checkedView !="" && checkedView != "False"){
+            $('#checkedDeviceAdd').prop('checked', true);
+        }
+        else{
+            $('#checkedDeviceAdd').prop('checked', false);
+        }
+
+        $('#searchString_AddDevices').change(function () {
+            searchStringView = $(this).val();
+            getToFilter();
+        });
+
+        $('.page_add').click(function () {
+            pageView = $(this).attr('value');
+            console.log("Page add value: " + $(this).attr('value'));
+            console.log("Page add value view: " + pageView);
+            getToFilter();
+        });
+
+        $('#selectKho').change(function () {
+            makhoView = $(this).val();
+            console.log("get in event");
+            getToFilter();
+        });
+
+        $('#checkedDeviceAdd').click(function () {
+            pageView = null;
+            checkedView = $(this).prop('checked');
+            getToFilter();
+        });
+
+        function getToFilter() {
+            console.log("get in function");
+             $.ajax({
+                url: '/Admin/Phieusua/FilterAddFix',
+                type: 'GET',
+                data: {
+                    pageAdd: pageView,
+                    searchString: searchStringView,
+                    makho : makhoView,
+                    check : checkedView,
+                    pageChoosen: pageChoosenView,
+                },
+                success:function(response){
+                    console.log("get in success");
+                    $('#addtbDiv').html(response);
+                    openModalPopup();
+                }
+            });
+
+
+        }
+
+        $('.checkBoxFix').click(function () {
+            
+            var matbView = $(this).val();
+            var checkedValue = $(this).prop('checked');
+            if(checkedValue == true){
+
+                $.ajax({
+                    url: '/admin/Phieusua/AddFix',
+                    type: 'Get',
+                    data: {
+                        matb: matbView
+                    }
+                });
+            }
+            else{
+                $.ajax({
+                    url: '/admin/Phieusua/RemoveFix',
+                    type: 'Get',
+                    data: {
+                        matb: matbView
+                    }
+                });
+            }
+            
+        });
+
+        $('#confirmFixChoosen').click(function () {
+            $.ajax({
+                url: '/admin/Phieusua/ConfirmTb',
+                type:'Get',
+                data: {
+                    pageChoosen: pageChoosenView,
+                },
+                success: function (response) {
+                    $('#showChoosen').html(response);
+                    closeModalPopup();
+                }
+            });
+        });
+
+
+
+        $('.CloseModalPopup').click(function () {
+            $.ajax({
+                url: '/admin/Phieusua/closeAddTb',
+                type: 'Get',
+                data: {
+                    pageChoosen: pageChoosenView,
+                },
+                success:function(response){
+                    $('#addtbDiv').html(response);
+                }
+            });
+            closeModalPopup();
+        });
+
+        $('#addModel').on('hide.bs.modal', function (e) {
+            // Check if the modal is being hidden because of a click outside
+            if ($(e.target).hasClass('modal') && !$(e.relatedTarget).is('button.close, .btn')) {
+                $.ajax({
+                    url: '/admin/Phieusua/closeAddTb',
+                    type: 'Get',
+                    data: {
+                        pageChoosen: pageChoosenView,
+                    },
+                    success: function (response) {
+                        $('#addtbDiv').html(response);
+                    }
+                });
+                closeModalPopup();
+            }
+        });
+
+        $('#buttonShowAdd').click(function (){
+            searchStringView = null;
+            makhoView = null;
+            pageView = null; 
+            checkedView = null;
+            
+        });
+
+        function openModalPopup() {
+            $('#addModel').addClass('show');
+            $('#addModel').removeAttr('aria-hidden');
+            $('#addModel').attr('aria-modal', 'true');
+            $('#addModel').css({
+                'display': 'block',
+                'padding-right': '17px'
+            });
+        }
+
+        function closeModalPopup() {
+            $('#addModel').removeClass('show');
+            $('#addModel').attr('aria-hidden', 'true');
+            $('#addModel').removeAttr('aria-modal');
+            $('#addModel').css({
+                'display': 'none',
+                'padding-right': ''
+            });
+            $('.modal-backdrop').remove();
+            console.log("Get to close modal popup");
+            $('body').removeClass('modal-open');
+            $('body').css({
+                'padding-right': ''
+            });
+
+
+        }
+    });
+
+</script>
+<div id="addtbDiv">
+<button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addModel" id="buttonShowAdd">
+    Thêm thiết bị
+</button>
+
+
+<!-- Modal -->
+<div class="modal fade" id="addModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width:60%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Danh sách thiết bị hư</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="CloseModalPopup">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div style="width:100%" class="d-none d-md-flex align-items-center mb-2">
+                    <div class="input-group" style="width:40%">
+                        <!-- Search bar -->
+                        <input name="searchString" id="searchString_AddDevices" type="search" placeholder="Tìm tên dòng thiết bị..." class="form-control rounded" aria-label="Search">
+                        <a class="btn btn-info rounded mr-2" id="btnSearch_AddDevices">
+                            <svg class="icon icon-lg">
+                                <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-search")"></use>
+                            </svg>
+                        </a>
+                    </div>
+                    <select class="form-control" id="selectKho" style="width:30%">
+                        <option value="">Chọn kho</option>
+                        @if (ViewBag.selectKhoList != null)
+                        {
+                            foreach (SelectListItem phongselect in ViewBag.selectKhoList)
+                            {
+                                <option value="@phongselect.Value">@phongselect.Text</option>
+                            }
+                        }
+                    </select>
+                    <div class="form-check ml-2 " >
+                        <input class="form-check-input"
+                         type="checkbox" value="" id="checkedDeviceAdd">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Đã chọn
+                        </label>
+                    </div>
+                </div>
+
+                <table class="table table-striped text-center">
+                    <thead>
+                        <tr class="text-center">
+                            <th>STT</th>
+                            <th>Ảnh</th>
+                            <th>Tên Thiết bị</th>
+                            <th>Seri</th>
+                            <th>Kho</th>
+                            <th>Chọn</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int index = (Model.PageNumber - 1) * Model.PageSize;
+                        }
+                        @foreach (TbFixAndCheck tbFixCheck in Model)
+                        {
+                            
+                            <tr>
+                                <td>@(++index)</td>
+                                <td> <img src="@Url.Content("~/images/" + tbFixCheck.Hinhanh)" class="card-image-top thumbnail-image" /></td>
+                                <td>@tbFixCheck.Tentb </td>
+                                <td>@tbFixCheck.Seri </td>
+                                <td>@tbFixCheck.Makho - @tbFixCheck.TenKho</td>
+                                <td>
+                                     <input class="form-check-input checkBoxFix" asp-for="@tbFixCheck.CheckFix" type="checkbox" value="@tbFixCheck.Matb">
+
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <!-- First Page -->
+                        @if (Model.PageNumber > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link page_add" value="1">Đầu</a>
+                            </li>
+                        }
+
+                        <!-- Page Numbers -->
+                        @for (var i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, Model.PageCount); i++)
+                        {
+                            <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                                    <a class="page-link page_add" value="@i">@i</a>
+                            </li>
+                        }
+
+                        <!-- Last Page -->
+                        @if (Model.PageNumber < Model.PageCount)
+                        {
+                            <li class="page-item">
+                                    <a class="page-link page_add" value="@Model.PageCount">Cuối</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="confirmFixChoosen">Xác nhận</button>
+                    <button type="button" class="btn btn-secondary CloseModalPopup" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+ </div>

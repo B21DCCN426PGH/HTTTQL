@@ -1,0 +1,100 @@
+﻿@model Phong
+@section naviheader {
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a class="linktag" style="cursor:pointer" asp-action="Index" asp-controller="Phong">Danh sách phòng</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Thêm phòng</li>
+            </ol>
+        </nav>
+    </div>
+}
+<script>
+    $(document).ready(function () {
+        $('#Loaiphong').change(function () {
+            var selectedValue = $(this).val();
+
+            if (selectedValue === 'Kho') {
+                $('#Douutien').parent().show();
+            } else {
+                $('#Douutien').parent().hide();
+            }
+        });
+
+        // Khởi tạo trạng thái ban đầu cho Độ ưu tiên
+        if ($('#Loaiphong').val() !== 'Kho') {
+            $('#Douutien').parent().hide();
+        }
+    });
+</script>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Thêm phòng mới</h3>
+    </div>
+    <div class="card-body ">
+        <div class="bs-stepper linear">
+            <div class="bs-stepper-content">
+                <form asp-action="Create">
+                    <div class="row">
+                        <div class="col-md-6" >
+                            <div class="form-group mb-2">
+                                <label asp-for="Map" class="control-label">Mã phòng</label>
+                                <input asp-for="Map" class="form-control"/>
+                                <span asp-validation-for="Map" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6" >
+                            <div class="form-group mb-2">
+                                <label asp-for="Macs" class="control-label">Tên cơ sở</label>
+                                <select asp-for="Macs" asp-items="@ViewBag.Coso" class="form-control">
+                                    <option value="">Chọn cơ sở</option>
+                                </select>
+                                <span asp-validation-for="Macs" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6" >
+                            <div class="form-group">
+                                <label asp-for="Tenphong" class="control-label">Tên phòng</label>
+                                <input asp-for="Tenphong" class="form-control" />
+                                <span asp-validation-for="Tenphong" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6" >
+                            <div class="form-group">
+                                <label asp-for="Loaiphong" class="control-label">Loại phòng</label>
+                                <select asp-for="Loaiphong" asp-items="@ViewBag.RoomTypes" class="form-control">
+                                    <option value="">Chọn loại phòng</option>
+                                </select>
+                                <span asp-validation-for="Loaiphong" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group mb-2">
+                        <label asp-for="Douutien" class="control-label">Độ ưu tiên</label>
+                        <select asp-for="Douutien" id="Douutien" class="form-control">
+                            <option value="">Chọn độ ưu tiên</option>
+                            @for (int i = 1; i <= 10; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Douutien" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="form-group mt-3">
+                        <button type="submit" class="btn btn-primary">Tạo mới</button>
+                        <a href="/Admin/Phong/Index" class="btn btn-danger">Quay lại</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,278 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Số lượng phiếu mượn theo trạng thái";
+    List<string> names = ViewBag.TrangthaiNames as List<string>;
+
+}
+
+<h1 class="text-center">QUẢN LÝ THIẾT BỊ TRƯỜNG ĐẠI HỌC QUỐC TẾ SÀI GÒN</h1>
+
+
+
+<style>
+    .maxH {
+        height: 192px;
+    }
+</style>
+
+<div class="container mt-3">
+    <input type="hidden" value="ViewBag.Counts" id="CountItem" />
+    <div class="row">
+
+        <div class="col-md-4 mb-3">
+            <a href="@Url.Action("DanhsachPhieuMuon", "PhieuMuonAdmin",new{indexPartial=1})" class="card-link">
+                <div class="card bg-success">
+                    <div class="card-body maxH">
+                        <h5 class="card-title text-white">Tổng số phiếu hôm nay</h5>
+                        <p class="card-text text-white">Hôm nay: @ViewBag.Today</p>
+                        <p class="card-text text-white">Bao gồm tất cả phiếu trong hôm nay</p>
+                        <p class="card-text text-white"><strong>Tổng số: @ViewBag.PhieutodayCount</strong></p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="@Url.Action("DanhsachPhieuMuon", "PhieuMuonAdmin", new { Trangthai = 0 })" class="card-link">
+                <div class="card bg-success maxH">
+                    <div class="card-body">
+                        <h5 class="card-title text-white">Tổng phiếu mượn chưa duyệt</h5>
+                        <p class="card-text text-white">Hôm nay: @ViewBag.Today</p>
+                        <p class="card-text text-white"><strong>Số lượng hôm nay: @ViewBag.todayCDCount</strong></p>
+                        <p class="card-text text-white"><strong>Tổng số: @ViewBag.tongCDCount</strong></p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="@Url.Action("DanhsachPhieuMuon", "PhieuMuonAdmin", new { trangthai = 1 })" class="card-link">
+                <div class="card bg-success">
+                    <div class="card-body maxH">
+                        <h5 class="card-title text-white">Tổng phiếu mượn chưa trả</h5>
+                        <p class="card-text text-white">Hôm nay: @ViewBag.Today</p>
+                        <p class="card-text text-white">Gồm các phiếu chưa trả của các ngày</p>
+                        <p class="card-text text-white"><strong>Tổng số: @ViewBag.CTCount</strong></p>
+                    </div>
+                </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="@Url.Action("ThietBiList", "ThietBi", new { trangthai = "Đang hư" })" class="card-link">
+                <div class="card bg-success">
+                    <div class="card-body maxH">
+                        <h5 class="card-title text-white">Tổng số thiết bị hư</h5>
+                        <p class="card-text text-white">Hôm nay: @ViewBag.Today</p>
+                        <p class="card-text text-white">Quản lý các thiết bị hư</p>
+                        <p class="card-text text-white"><strong>Tổng số: @ViewBag.ThietBiHuCount</strong></p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="@Url.Action("DanhsachPhieusua", "Phieusua", new { trangthai = 0 })" class="card-link">
+                <div class="card bg-success">
+                    <div class="card-body maxH">
+                        <h5 class="card-title text-white">Số phiếu sửa chưa hoàn thành</h5>
+                        <p class="card-text text-white">Hôm nay: @ViewBag.Today</p>
+                        <p class="card-text text-white">Gồm các phiếu sửa chưa sửa xog</p>
+                        <p class="card-text text-white"><strong>Tổng số: @ViewBag.ChuaSuaCount</strong></p>
+                    </div>
+                </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="@Url.Action("ThietBiList", "ThietBi")" class="card-link">
+                <div class="card bg-success">
+                    <div class="card-body maxH">
+                        <h5 class="card-title text-white">Quản lý thiết bị</h5>
+                        <p class="card-text text-white">Hôm nay: @ViewBag.Today</p>
+                        <p class="card-text text-white">Quản lý các thiết bị của Trường SIU</p>
+                        <p class="card-text text-white"><strong>Tổng số: @ViewBag.ThietBiCount</strong></p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="@Url.Action("Index", "DongThietBi")" class="card-link">
+                <div class="card bg-success">
+                    <div class="card-body maxH">
+                        <h5 class="card-title text-white">Quản lý dòng thiết bị</h5>
+                        <p class="card-text text-white">Hôm nay: @ViewBag.Today</p>
+                        <p class="card-text text-white">Quản lý các dòng thiết bị của Trường SIU</p>
+                        <p class="card-text text-white"><strong>Tổng số: @ViewBag.DTBCount</strong></p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+        </div>
+
+
+        @if (HttpContextAccessor.HttpContext.Session.GetInt32("TypeAccount") == 2)
+        {
+            <div class="col-md-4 mb-3">
+                <a href="@Url.Action("Index", "UserEmployee")" class="card-link">
+                    <div class="card bg-success">
+                        <div class="card-body maxH">
+                            <h5 class="card-title text-white">Quản lý nhân viên</h5>
+                            <p class="card-text text-white">Hôm nay: @ViewBag.Today</p>
+                            <p class="card-text text-white">Quản lý nhân viên của Trường SIU</p>
+                            <p class="card-text text-white"><strong>Tổng số: @ViewBag.NvCount</strong></p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <a href="@Url.Action("Index", "UserStudent")" class="card-link">
+                    <div class="card bg-success">
+                        <div class="card-body maxH">
+                            <h5 class="card-title text-white">Quản lý sinh viên</h5>
+                            <p class="card-text text-white">Hôm nay: @ViewBag.Today</p>
+                            <p class="card-text text-white">Quản lý sinh viên của Trường SIU</p>
+                            <p class="card-text text-white"><strong>Tổng số: @ViewBag.SvCount</strong></p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-4 mb-3">
+            </div>
+        }
+
+
+        <div class="col-md-12 mb-3 mt-3">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Số lượng phiếu mượn theo trạng thái</h3>
+                    <canvas id="barChart" width="400" height="200" data-trangthai-names='@Json.Serialize(ViewBag.TrangthaiNames)' data-counts='@Json.Serialize(ViewBag.Counts)'></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-12 mb-3 mt-3">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Chi phí sửa chữa thiết bị theo tháng</h3>
+                    <canvas id="repairCostChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<div class="footer" style="border:none"></div>
+   @*  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
+
+<script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '@Url.Action("GetChartData", "HomeAdmin")', // Đường dẫn tới Action Method
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var trangthaiNames = data.trangthaiNames; // Lấy danh sách tên trạng thái từ dữ liệu JSON
+                    var counts = data.counts;
+
+                    //Làm tròn các giá trị trong mảng counts
+                    counts = counts.map(function (value) {
+                        return Math.round(value);
+                    });
+
+                    var ctx = document.getElementById('barChart').getContext('2d');
+                    var barChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: trangthaiNames,
+                            datasets: [{
+                                label: "Số phiếu",
+                                data: counts,
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    stepSize: 1, // Bước giữa các giá trị trên trục y là 1
+                                    callback: function (value, index, values) {
+                                        if (Number.isInteger(value)) {
+                                            return value; // Hiển thị giá trị nguyên
+                                        }
+                                        return null; // Ẩn các giá trị không phải số nguyên
+                                    }
+                                }
+                            }
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+
+            $.ajax({
+                url: '@Url.Action("GetChartSuaData", "HomeAdmin")',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log("Dữ liệu nhận được từ server:", data);
+
+                    var labels = data.labels; // Lấy danh sách tháng từ dữ liệu JSON
+                    var costs = data.costs; // Lấy tổng chi phí từ dữ liệu JSON
+
+                    // Làm tròn các giá trị trong mảng costs
+                    // // costs = costs.map(function (value) {
+                    // //     return Math.round(value);
+                    // // });
+
+                    var ctx = document.getElementById('repairCostChart').getContext('2d');
+                    var repairCostChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: "Chi phí sửa chữa",
+                                data: costs,
+                                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function (value, index, values) {
+                                            if (Number.isInteger(value)) {
+                                                return value; // Hiển thị giá trị nguyên
+                                            }
+                                            return null; // Ẩn các giá trị không phải số nguyên
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Lỗi khi lấy dữ liệu:", error);
+                }
+            });
+        });
+</script>

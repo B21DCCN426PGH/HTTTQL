@@ -1,0 +1,154 @@
+﻿@model X.PagedList.IPagedList<Phieumuon>
+
+<script>
+    $(document).ready(function () {
+        var searchString1 = '@ViewBag.searchString';
+        var selectToday1 = '@(ViewBag.selectState ?? "-1")';
+        var page1 = null;
+        $('#searchString_1').val(searchString1);
+        $('#SelectToday').val(selectToday1);
+
+        $('#btnSearch_1').click(function (e) {
+            var selectedValue = $('#searchString_1').val();
+            searchString1 = selectedValue;
+            getToController();
+            
+        });
+
+        $('#searchString_1').change(function () {
+            var selectedValue = $(this).val();
+            searchString1 = selectedValue;
+            getToController();
+        });
+
+        $('#SelectToday').change(function () {
+            var selectedValue = $(this).val();
+            if (selectedValue) {
+                selectToday1 = selectedValue;
+                getToController();
+            }
+        });
+        $('.page2').on("click", function () {
+            var selectedValue = $(this).attr('value');
+            page1 = selectedValue;
+            getToController();
+        });
+        function getToController() {
+            $.ajax({
+                url: '/admin/PhieuMuonAdmin/DanhsachPhieuMuon',
+                type: 'GET',
+                data: {
+                    page: page1,
+                    searchString: searchString1,
+                    Trangthai: selectToday1,// Corrected the colons here,
+                    indexPartial: 1
+                },
+                success: function (response) { // Corrected the parameter name here
+                    $('#content_1').html(response);
+                }
+            });
+        }
+    });
+
+</script>
+<div id="content_1">
+    <div style="width:60%" class="d-none d-md-flex mb-2">
+        <div class="input-group">
+            <!-- Search bar -->
+            <input style="width:30%"
+                   name="searchString" id="searchString_1" type="search" placeholder="Tìm mã phiếu mượn/mã sv..." class="form-control rounded" aria-label="Search">
+            <button class="btn btn-info rounded" type="submit" id="btnSearch_1">
+                <svg class="icon icon-lg">
+                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-search")"></use>
+                </svg>
+            </button>
+
+            <select class="ml-3 rounded-2 form-select" id="SelectToday">
+                <option value="-1">Chọn trạng thái</option>
+                @foreach (SelectListItem item in ViewBag.StateSelect)
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="bs-stepper linear">
+        <div class="bs-stepper-content">
+
+            <table class="table table-striped">
+                <thead>
+                    <tr class="text-center">
+                        <th>STT</th>
+                        <th>Mã pm</th>
+                        <th>Tên sinh viên</th>
+                        <th>Mã sv</th>
+                        <th>Ngày lập</th>
+                        <th>Ngày mượn</th>
+                        <th>Người duyệt</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int indexCount = (Model.PageNumber - 1) * Model.PageSize;
+                    }
+                    @foreach (Phieumuon pm in Model)
+                    {
+                        ++indexCount;
+                        var formattedDateNgayLap = ((DateTime)pm.Ngaylap).ToString("dd/MM/yyyy");
+                        var formattedDateNgayMuon = ((DateTime)pm.Ngaymuon).ToString("dd/MM/yyyy");
+                        <tr class="text-center">
+                            <td>@indexCount</td>
+                            <td>@pm.Mapm</td>
+                            <td>@pm.MasvNavigation.Tensv</td>
+                            <td>@pm.MasvNavigation.Masv</td>
+                            <td>@formattedDateNgayLap</td>
+                            <td>@formattedDateNgayMuon</td>
+                            <td>@(pm.Manv == null ? "" : pm.ManvNavigation.Tennv)</td>
+                            <td>
+                                <partial name="_PartialTrangthaiPM" model="@pm.Trangthai" />
+                            </td>
+                            <td>
+                                <a asp-action="ChitietPhieuMuon" asp-controller="PhieuMuonAdmin" asp-route-mapm="@pm.Mapm" class="btn btn-info btn-sm rounded">
+                                    <svg class="icon icon-lg">
+                                        <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-pen")"></use>
+                                    </svg>
+                                </a>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <!-- First Page -->
+                    @if (Model.PageNumber > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link page2" value="1">Đầu</a>
+                        </li>
+                    }
+
+                    <!-- Page Numbers -->
+                    @for (var i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, Model.PageCount); i++)
+                    {
+                        <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                            <a class="page-link page2" value="@i">@i</a>
+                        </li>
+                    }
+
+                    <!-- Last Page -->
+                    @if (Model.PageNumber < Model.PageCount)
+                    {
+                        <li class="page-item">
+                            <a class="page-link page2" value="@Model.PageCount">Cuối</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+</div>

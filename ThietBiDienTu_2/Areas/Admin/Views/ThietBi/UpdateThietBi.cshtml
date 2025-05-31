@@ -1,0 +1,247 @@
+﻿@using System.Web;
+@using ThietBiDienTu_2.Areas.Admin.ViewModels;
+@using ThietBiDienTu_2.Models;
+@using Newtonsoft.Json;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Create ThietBi";
+}
+
+
+@model ThietBiViewAdmin
+@section naviheader{
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Home</a></li>
+                <li class="breadcrumb-item"><a class="linktag" style="cursor:pointer" asp-action="ThietBiList" asp-controller="ThietBi">Thiết bị trong phòng</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Cập nhật thiết bị trong phòng</li>
+            </ol>
+        </nav>
+    </div>
+}
+<!-- Content Header (Page header) -->
+<div class="card">
+    <div class="card-header">
+        <h3>Cập nhật thiết bị trong phòng</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <!-- Left Column for Image -->
+            <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
+                <img src="~/images/@Model.HinhAnh" id="imgProduct" class="img-fluid" alt="Product Image"
+                     style="border:solid 2px #ccc; max-height:70%;max-width:80%; border-radius:4px;">
+                <div class="input-group mt-3" style="width:100%">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Ảnh thiết bị</span>
+                    <input readonly type="text" class="form-control" aria-label="Sizing example input" id="linkImage"
+                           value="~/images/@Model.HinhAnh" aria-describedby="inputGroup-sizing-default">
+                </div>
+            </div>
+
+            <!-- Right Column for Form -->
+            <div class="col-md-6">
+                <div class="bs-stepper linear">
+                    <div class="bs-stepper-content">
+                        <form method="post" id="updateForm">
+                            <input asp-for="@Model.MaDongTb"  hidden />
+                            <input asp-for="@Model.Phong" value="123" hidden />
+                            <input asp-for="@Model.CoSo" value="123" hidden />
+                            <input asp-for="@Model.HinhAnh"  hidden />
+                            <input asp-for="@Model.Matb" hidden />
+                            <input name="oldSeri" value="@ViewBag.oldSeri" hidden />
+                            <!-- your steps content here -->
+                                <div class="form-group mb-2">
+                                    <label asp-for="@Model.DongThietBi" class="mb-2"><strong>Tên thiết bị</strong></label>
+                                    <input class="form-control" asp-for="@Model.DongThietBi" style="background-color:#E8E8E8" readonly />
+                                    <span asp-validation-for="@Model.DongThietBi" class="text-danger"></span>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label asp-for="@Model.Seri" class="mb-2"><strong>Seri thiết bị<span class="text-danger"> *</span></strong></label>
+                                    <input asp-for="@Model.Seri" class="form-control" id="SeriInput" />
+                                    <span asp-validation-for="@Model.Seri" class="text-danger"></span>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6" style="width:40%">
+                                        <div class="form-group mb-2">
+                                            <label asp-for="@Model.MaCoSo" class="mb-2"><strong>Cơ sở<span class="text-danger"> *</span></strong></label>
+                                            <select asp-for="@Model.MaCoSo" id="branchSelect" class="form-control">
+                                                <option value="all">Chọn Cơ sở</option>
+                                                @foreach (SelectListItem items in ViewBag.CoSoList)
+                                                {
+                                                    <option value="@items.Value">@items.Text</option>
+                                                }
+                                            </select>
+                                            <span asp-validation-for="@Model.MaCoSo" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" style="width:60%">
+                                        <div class="form-group mb-2">
+                                            <label asp-for="@Model.MaP" class="mb-2"><strong>Phòng<span class="text-danger"> *</span></strong></label>
+                                            <select asp-for="@Model.MaP" id="roomSelect" class="form-control">
+                                                <option id="firstOptionRoom" value="all">Chọn Phòng</option>
+                                                @foreach (SelectListItem items in ViewBag.PhongList)
+                                                {
+                                                    <option value="@items.Value">@items.Text.Split(',')[0]</option>
+                                                }
+                                            </select>
+                                            <span asp-validation-for="@Model.MaP" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6" style="width:40%">
+                                        <div class="form-group mb-2">
+                                            <label asp-for="@Model.TrangThai" class="mb-2"><strong>Trạng thái<span class="text-danger"> *</span></strong></label>
+                                            <select id="StateProduct" asp-for="@Model.TrangThai" class="form-control">
+                                                <option id="firstOption" value="@Model.TrangThai">@Model.TrangThai</option>
+                                            </select>
+                                            <span asp-validation-for="@Model.TrangThai" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" style="width:60%">
+                                        <div class="form-group mb-2">
+                                            <label class="mb-2"><strong>Loại phòng</strong></label>
+                                            <input id="roomType" asp-for="@Model.LoaiPhong" class="form-control" readonly style="background-color:#E8E8E8" />
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="form-group mt-3">
+                                     <button type="submit" class="btn btn-primary">Cập nhật</button>
+                                    <a asp-action="ThietBiList" asp-controller="ThietBi" class="btn btn-danger">Quay lại</a>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="footer"></div>
+
+<script>
+    
+    $(document).ready(function () {
+        if ($('#StateProduct').val() == "Đang mượn" || $('#StateProduct').val() == "Đang sửa") {
+            console.log("Get in here borrow");
+            $('#StateProduct').prop('disabled', true);
+            $('#roomSelect').prop('disabled', true);
+            $('#branchSelect').prop('disabled', true);
+        }
+    });
+
+    document.getElementById('branchSelect').addEventListener('change', function () {
+        var branchId = this.value;
+        var roomSelect = document.getElementById('roomSelect');
+
+        //clear all option
+
+        while (roomSelect.options.length > 1) {
+            roomSelect.remove(1);
+        }
+
+        //C# is in server side, Javascript is in client side
+        //Show cannot use branch id in C# so using text
+    @foreach (SelectListItem items in ViewBag.PhongList)
+    {
+        <text>
+                                var roomBranchId = "@items.Text.Split(',')[1]";
+            if (branchId === "all" || roomBranchId === branchId) {
+                roomSelect.options.add(new Option("@items.Text.Split(',')[0]", "@items.Value", false));
+                //false mean not selected by default
+            }
+        </text>
+        //Switch razor syntax and generate js code dynamically for each room
+    }
+            });
+
+    document.getElementById('roomSelect').addEventListener('change', function () {
+        var RoomId = this.value;
+        var roomType = document.getElementById('roomType');
+        var stateProduct = document.getElementById('StateProduct');
+        var firstOption = document.getElementById('firstOption');
+        while (stateProduct.options.length > 1) {
+            stateProduct.remove(1);
+        }
+    @foreach (var items in ViewBag.PhongFull)
+    {
+        //'  ' mean if data not string it still convert to string
+        <text>
+                                if ('@items.Map' === RoomId) {
+                roomType.value = '@items.Loaiphong';
+                if ('@items.Loaiphong' === 'Kho') {
+
+                    firstOption.value = "Sẵn sàng";
+                    firstOption.text = "Sẵn sàng";
+                    stateProduct.options.add(new Option("Đang hư", "Đang hư", false));
+                    stateProduct.options.add(new Option("Thanh lý", "Thanh lý", false));
+                  
+                    
+                }
+                else {
+                    firstOption.value = "Hoạt động";
+                    firstOption.text = "Hoạt động";
+                }
+
+            }
+        </text>
+    }
+            
+    });
+
+    function setStart() {
+        var branchId = document.getElementById('branchSelect').value;
+        var roomSelect = document.getElementById('roomSelect');
+        var roomSelectValue = roomSelect.value;
+        var firstOption = document.getElementById('firstOptionRoom');
+
+        //clear all option
+
+        while (roomSelect.options.length > 1) {
+            roomSelect.remove(1);
+        }
+
+        //C# is in server side, Javascript is in client side
+        //Show cannot use branch id in C# so using text
+        @foreach (SelectListItem items in ViewBag.PhongList)
+            {
+            <text>
+            var itemsValue = "@items.Value";
+        var roomBranchId = "@items.Text.Split(',')[1]";
+        if ((branchId === "all" || roomBranchId === branchId) && itemsValue != roomSelectValue) {
+            roomSelect.options.add(new Option("@items.Text.Split(',')[0]", "@items.Value", false));
+            //false mean not selected by default
+        }
+        if (itemsValue == roomSelectValue) {
+            firstOption.value = "@items.Value";
+            firstOption.text = "@items.Text.Split(',')[0]";
+        }
+        </text>
+
+        //Switch razor syntax and generate js code dynamically for each room
+            }
+            var roomType = document.getElementById('roomType');
+        var stateProduct = document.getElementById('StateProduct');
+        var firstOptionState = document.getElementById('firstOption');
+
+        if (firstOptionState.value != "Sẵn sàng" && firstOptionState.value!="Hoạt động") {
+            stateProduct.options.add(new Option("Sẵn sàng", "Sẵn sàng", false));
+        }
+        if (firstOptionState.value != "Thanh lý" && firstOptionState.value != "Hoạt động") {
+            stateProduct.options.add(new Option("Thanh lý", "Thanh lý", false));
+        }
+        if (firstOptionState.value != "Hư" && firstOptionState.value != "Hoạt động") {
+            stateProduct.options.add(new Option("Đang hư", "Đang hư", false));
+        }
+    }
+    window.onload = function(){
+        setStart();
+    }
+        // Your other JavaScript code for handling room selection...
+
+</script>

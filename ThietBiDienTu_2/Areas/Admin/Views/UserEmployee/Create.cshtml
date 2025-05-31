@@ -1,0 +1,154 @@
+﻿@{
+    ViewData["Title"] = "CreateEmployee";
+}
+
+@model ThietBiDienTu_2.Models.Nhanvien
+@section naviheader{
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="/Admin/UserEmployee/Index">Danh sách nhân viên</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Thêm nhân viên</li>
+            </ol>
+        </nav>
+    </div>
+}
+<!-- Content Header (Page header) -->
+<div class="card">
+    <div class="card-header">
+        <h3>Thêm nhân viên</h3>
+    </div>
+    <div class="card-body ">
+        <div class="bs-stepper linear">
+            <div class="bs-stepper-content">
+                @using (Html.BeginForm("Create", "UserEmployee", FormMethod.Post, new { }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    <!-- your steps content here -->
+                        <div class="row">
+                            <div class="col-md-6" style="width:40%">
+                                <div class="form-group mb-2" >
+                                    <label for="Manv" class="mb-2"><strong>Mã nhân viên<span class="text-danger"> *</span></strong></label>
+                                    @Html.TextBoxFor(x => x.Manv, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.Manv, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6" style="width:60%">
+                                <div class="form-group mb-2">
+                                    <div class="form-group mb-2">
+                                        <label for="Tennv" class="mb-2"><strong>Tên nhân viên<span class="text-danger"> *</span></strong></label>
+                                        @Html.TextBoxFor(x => x.Tennv, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(x => x.Tennv, null, new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group mb-2">
+                            <label class="mb-2"><strong>Mật khẩu<span class="text-danger"> *</span></strong></label>
+                            <input class="form-control" type="text" value="123456"
+                                   style="background-color:#E8E8E8;" aria-label="readonly input example" readonly>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6" style="width:40%">
+                                <div class="form-group mb-2">
+                                    <label for="Sdt" class="mb-2"><strong>Số điện thoại<span class="text-danger"> *</span></strong></label>
+                                    @Html.TextBoxFor(x => x.Sdt, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.Sdt, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6" style="width:60%">
+                                <div class="form-group mb-2">
+                                    <label for="Email" class="mb-2"><strong>Email<span class="text-danger"> *</span></strong></label>
+                                    @Html.TextBoxFor(x => x.Email, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.Email, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label for="Gioitinh"><strong>Giới tính<span class="text-danger"> *  </span></strong></label>
+                            @Html.RadioButtonFor(x => x.Gioitinh, "Nam") Nam @Html.RadioButtonFor(x => x.Gioitinh, "Nữ") Nữ
+                            <div class="text-danger">
+                                @Html.ValidationMessageFor(x => x.Gioitinh, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6" style="width:40%">
+                                <div class="form-group mb-2">
+                                    <label for="Ngaysinh" class="mb-2"><strong>Ngày sinh<span class="text-danger"> *</span></strong></label>
+                                    @Html.TextBoxFor(x => x.Ngaysinh, new { @class = "form-control",placeholder="DD/MM/YYYY" })
+                                    @Html.ValidationMessageFor(x => x.Ngaysinh, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6" style="width:60%">
+                                <div class="form-group mb-2">
+                                    <label for="Diachi" class="mb-2"><strong>Địa chỉ</strong></label>
+                                    @Html.TextBoxFor(x => x.Diachi, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.Diachi, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <input asp-for="@Model.ManvNavigation.Matk" value="123" hidden/>
+                        <input asp-for="@Model.ManvNavigation.Matkhau" value="123" hidden/>
+                        <div class="form-group mt-3">
+                        <button type="submit" class="btn btn-primary">Tạo mới</button>
+                            <a href="/Admin/UserEmployee/Index" class="btn btn-danger">Quay lại</a>
+                        </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="footer"></div>
+
+@*
+<form class="row g-3">
+    <div class="col-md-6">
+        <label for="inputEmail4" class="form-label">Email</label>
+        <input type="email" class="form-control" id="inputEmail4">
+    </div>
+    <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">Password</label>
+        <input type="password" class="form-control" id="inputPassword4">
+    </div>
+    <div class="col-12">
+        <label for="inputAddress" class="form-label">Address</label>
+        <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+    </div>
+    <div class="col-12">
+        <label for="inputAddress2" class="form-label">Address 2</label>
+        <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+    </div>
+    <div class="col-md-6">
+        <label for="inputCity" class="form-label">City</label>
+        <input type="text" class="form-control" id="inputCity">
+    </div>
+    <div class="col-md-4">
+        <label for="inputState" class="form-label">State</label>
+        <select id="inputState" class="form-select">
+            <option selected>Choose...</option>
+            <option>...</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label for="inputZip" class="form-label">Zip</label>
+        <input type="text" class="form-control" id="inputZip">
+    </div>
+    <div class="col-12">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="gridCheck">
+            <label class="form-check-label" for="gridCheck">
+                Check me out
+            </label>
+        </div>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Sign in</button>
+    </div>
+</form> *@

@@ -1,0 +1,194 @@
+﻿@using ThietBiDienTu_2.Areas.Admin.ViewModels;
+@using ThietBiDienTu_2.Models;
+@{
+    ViewData["Title"] = "CreateEmployee";
+}
+
+@model ThietBiDienTu_2.Models.Sinhvien
+@section naviheader{
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="/Admin/UserStudent/Index">Danh sách sinh viên</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Thêm sinh viên</li>
+            </ol>
+        </nav>
+    </div>
+}
+
+<!-- Content Header (Page header) -->
+<div class="card">
+    <div class="card-header">
+        <h3>Thêm sinh viên</h3>
+    </div>
+    <div class="card-body">
+        <div class="bs-stepper linear">
+            <div class="bs-stepper-content">
+                @using (Html.BeginForm("Create", "UserStudent", FormMethod.Post, new { }))
+                {
+                    <input asp-for="@Model.MasvNavigation.Matk" value="123" hidden />
+                    <input asp-for="@Model.MasvNavigation.Matkhau" value="123" hidden />
+
+                    <input asp-for="@Model.MakhoaNavigation.Makhoa" value="123" hidden />
+                    <input asp-for="@Model.MakhoaNavigation.Tenkhoa" value="123" hidden />
+
+                    <input asp-for="@Model.ManganhNavigation.Manganh" value="123" hidden />
+                    <input asp-for="@Model.ManganhNavigation.Tennganh" value="123" hidden />
+                    <!-- your steps content here -->
+                        <div class="row">
+                        <div class="col-md-6" style="width:40%">
+                                <div class="form-group mb-2">
+                                    <label for="Masv" class="mb-2"><strong>Mã sinh viên<span class="text-danger"> *</span></strong></label>
+                                    @Html.TextBoxFor(x => x.Masv, new { @class = "form-control",@id="masvInput" })
+                                    @Html.ValidationMessageFor(x => x.Masv, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        <div class="col-md-6" style="width:60%">
+                                <div class="form-group mb-2">
+                                    <label for="Tensv" class="mb-2"><strong>Tên sinh viên<span class="text-danger"> *</span></strong></label>
+                                    @Html.TextBoxFor(x => x.Tensv, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.Tensv, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="row">
+                        <div class="col-md-6" style="width:40%">
+                                <div class="form-group mb-2">
+                                    <label for="Khoa" class="mb-2"><strong>Khoá<span class="text-danger"> *</span></strong></label>
+                                <select asp-for="@Model.Makhoa" class="form-control">
+                                    <option value="0">Chọn khóa</option>
+                                    @foreach(SelectListItem a in ViewBag.khoaType)
+                                    {
+                                        <option value="@a.Value">@a.Text</option>
+                                    }
+                                </select>
+                                    
+                                    @Html.ValidationMessageFor(x => x.Makhoa, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        <div class="col-md-6" style="width:60%">
+                                <div class="form-group mb-2">
+                                    <label for="Nganh" class="mb-2"><strong>Ngành<span class="text-danger"> *</span></strong></label>
+                                <select asp-for="@Model.Manganh" class="form-control">
+                                    <option value="0">Chọn ngành</option>
+                                    @foreach (SelectListItem a in ViewBag.nganhType)
+                                    {
+                                        <option value="@a.Value">@a.Text</option>
+                                    }
+                                </select>
+                                  
+                                @Html.ValidationMessageFor(x=>x.Manganh,null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                        <div class="col-md-6" style="width:40%">
+                            <div class="form-group mb-2">
+                                <label for="Ngaysinh" class="mb-2"><strong>Ngày sinh<span class="text-danger"> *</span></strong></label>
+                                @Html.TextBoxFor(x => x.Ngaysinh, new { @class = "form-control",placeholder="DD/MM/YYYY" })
+                                @Html.ValidationMessageFor(x => x.Ngaysinh, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="width:60%">
+                                <div class="form-group mb-2">
+                                    <label class="mb-2"><strong>Mật khẩu<span class="text-danger"> *</span></strong></label>
+                                    <input class="form-control" type="text" value="123456" aria-label="readonly input example" style="background-color:#E8E8E8;" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                        <div class="col-md-6" style="width:40%">
+                                <div class="form-group mb-2">
+                                    <label for="Sdt" class="mb-2"><strong>Số điện thoại<span class="text-danger"> *</span></strong></label>
+                                    @Html.TextBoxFor(x => x.Sdt, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.Sdt, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        <div class="col-md-6" style="width:60%">
+                                <div class="form-group mb-2">
+                                    <label for="Email" class="mb-2"><strong>Email<span class="text-danger"> *</span></strong></label>
+                                    @Html.TextBoxFor(x => x.Email, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.Email, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label for="Gioitinh"><strong>Giới tính<span class="text-danger"> *  </span></strong></label>
+                            @Html.RadioButtonFor(x => x.Gioitinh, "Nam") Nam @Html.RadioButtonFor(x => x.Gioitinh, "Nữ") Nữ
+                            <div class="text-danger">
+                                @Html.ValidationMessageFor(x => x.Gioitinh, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            
+                            <div class="col-md-12">
+                                <div class="form-group mb-2">
+                                    <label for="Diachi" class="mb-2"><strong>Địa chỉ</strong></label>
+                                    @Html.TextBoxFor(x => x.Diachi, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.Diachi, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                        <button type="submit" class="btn btn-primary">Tạo mới</button>
+                            <a href="/Admin/UserStudent/Index" class="btn btn-danger">Quay lại</a>
+                        </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="footer"></div>
+@*
+<form class="row g-3">
+    <div class="col-md-6">
+        <label for="inputEmail4" class="form-label">Email</label>
+        <input type="email" class="form-control" id="inputEmail4">
+    </div>
+    <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">Password</label>
+        <input type="password" class="form-control" id="inputPassword4">
+    </div>
+    <div class="col-12">
+        <label for="inputAddress" class="form-label">Address</label>
+        <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+    </div>
+    <div class="col-12">
+        <label for="inputAddress2" class="form-label">Address 2</label>
+        <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+    </div>
+    <div class="col-md-6">
+        <label for="inputCity" class="form-label">City</label>
+        <input type="text" class="form-control" id="inputCity">
+    </div>
+    <div class="col-md-4">
+        <label for="inputState" class="form-label">State</label>
+        <select id="inputState" class="form-select">
+            <option selected>Choose...</option>
+            <option>...</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label for="inputZip" class="form-label">Zip</label>
+        <input type="text" class="form-control" id="inputZip">
+    </div>
+    <div class="col-12">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="gridCheck">
+            <label class="form-check-label" for="gridCheck">
+                Check me out
+            </label>
+        </div>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Sign in</button>
+    </div>
+</form> *@

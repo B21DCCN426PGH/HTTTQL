@@ -1,0 +1,114 @@
+﻿@using ThietBiDienTu_2.Models;
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+
+@model X.PagedList.IPagedList<Nhanvien>
+
+<script>
+    $(document).ready(function () {
+        var pageNumber = null;
+        var searchStringAjax = '@ViewBag.searchString';
+
+        $('.page-link').click(function () {
+            pageNumber = $(this).attr('value');
+            getToController();
+        });
+
+        function getToController() {
+            $.ajax({
+                url: '/admin/UserEmployee/Index',
+                type: 'GET',
+                data: {
+                    searchString: searchStringAjax,
+                    page: pageNumber
+                },
+                success: function (response) {
+                    $('#PartialViewNv').html(response);
+                },
+                error: function () {
+                    console.log("fail");
+                }
+            });
+        }
+    });
+</script>
+<div class="table-responsive">
+<table class="table table-striped">
+    <thead>
+        <tr class="text-center">
+            <th>STT</th>
+            <th>Mã nv</th>
+            <th>Tên</th>
+            <th>Giới tính</th>
+            <th>Ngày sinh</th>
+            <th>Số điện thoại</th>
+            <th>Email</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int index = (Model.PageNumber - 1) * Model.PageSize;
+        }
+        @foreach (Nhanvien nv in Model)
+        {
+            ++index;
+            var formattedDate = ((DateTime)nv.Ngaysinh).ToString("dd/MM/yyyy");
+            <tr class="text-center">
+                <td>@index</td>
+                <td>@nv.Manv</td>
+                <td>@nv.Tennv</td>
+                <td>@nv.Gioitinh</td>
+                <td>@formattedDate</td>
+                <td>@nv.Sdt</td>
+                <td>@nv.Email</td>
+                <td>
+                    <a href="/admin/userEmployee/Update/@nv.Manv" class="btn btn-info btn-sm rounded">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-pen")"></use>
+                        </svg>
+                    </a>
+                    @if (nv.ManvNavigation.Loaitk != 2)
+                    {
+                        <a onclick="if (confirm('Xác nhận xóa nhân viên?') == true) {location.href='/admin/userEmployee/Delete/@nv.Manv'}" class="btn btn-danger btn-sm rounded">
+                            <svg class="icon icon-lg">
+                                <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-trash")"></use>
+                            </svg>
+                        </a>
+                    }
+
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+</div>
+<nav>
+    <ul class="pagination justify-content-center">
+        <!-- First Page -->
+        @if (Model.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link" value="1">Đầu</a>
+            </li>
+        }
+
+        <!-- Page Numbers -->
+        @for (var i = 1; i <= Model.PageCount; i++)
+        {
+            <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                <a class="page-link" value="@i">@i</a>
+            </li>
+        }
+
+        <!-- Last Page -->
+        @if (Model.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link" value="@Model.PageCount">Cuối</a>
+            </li>
+        }
+    </ul>
+</nav>

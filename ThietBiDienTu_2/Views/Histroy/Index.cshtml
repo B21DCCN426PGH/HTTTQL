@@ -1,0 +1,176 @@
+﻿@using ThietBiDienTu_2.Models.ViewModels;
+@using ThietBiDienTu_2.Models;
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+@model X.PagedList.IPagedList<Phieumuon>
+@{
+    ViewData["Title"] = "Phieu muon list";
+
+    // string GetTrangThaiString(int trangThai)
+    // {
+    //     switch (trangThai)
+    //     {
+    //         case 0: return "Chưa duyệt";
+    //         case 1: return "Chưa trả";
+    //         case 2: return "Đã duyệt";
+    //         case 3: return "Đã trả";
+    //         case 4: return "Từ chối";
+    //         case 5: return "Hủy phiếu";
+    //         case 6: return "Không mượn";
+    //         default: return ""; // Trạng thái không xác định
+    //     }
+    // }
+
+}
+
+
+@if (TempData["Notifications"] != null)
+{
+    <div class="alert alert-success notify">
+        <strong>Thành công!</strong> Phiếu mượn vừa tạo có mã : @TempData["Notifications"]
+    </div>
+}
+@section searchArea {
+    <div style="width:85%" class="d-none d-md-flex align-items-center mb-2">
+        <div class="input-group" style="width:35%">
+            <!-- Search bar -->
+            <input name="searchString" id="searchString_2" type="search" placeholder="Tìm mã phiếu mượn..." class="form-control rounded" aria-label="Search">
+            <button class="btn btn-info rounded mr-2" type="submit" id="btnSearch_2">
+                <svg class="icon icon-lg">
+                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-search")"></use>
+                </svg>
+            </button>
+        </div>
+        <select class="rounded-2 form-select" style="width:19%" id="SelectAnother">
+            <option value="-1">Chọn trạng thái</option>
+            <option value="0">Chưa duyệt</option>
+            <option value="1">Chưa trả</option>
+            <option value="2">Đã duyệt</option>
+            <option value="3">Đã trả</option>
+            <option value="4">Từ chối</option>
+            <option value="5">Hủy phiếu</option>
+            <option value="6">Không mượn</option>
+        </select>
+        <div class="form-group mb-0 ml-2" style="width:15%">
+            <label class="mb-1"><strong>Ngày mượn từ</strong></label>
+            <input type="date" class="form-control" id="BorrowFrom" min="2024-03-01">
+        </div>
+        <div class="form-group mb-0 ml-2" style="width:15%">
+            <label class="mb-1"><strong>Ngày mượn đến</strong></label>
+            <input type="date" class="form-control" id="BorrowTo" min="2024-03-01" />
+        </div>
+
+    </div>
+}
+
+@section naviheader {
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Lịch sử phiếu mượn</li>
+            </ol>
+        </nav>
+    </div>
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3>Lịch sử phiếu mượn</h3>
+    </div>
+    <div class="card-body">
+        <div class="bs-stepper linear">
+            <div class="bs-stepper-content">
+                <div id="PartialViewPhieuMuon">
+                <partial name="PartialViewPhieuMuon" model="Model"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer"></div>
+<script>
+    $(document).ready(function () {
+        var searchMapmAjax = $('#searchString_2').val();
+        var trangThaiAjax = $('#SelectAnother').val();
+        var borrowFrom = $('#BorrowFrom').val();
+        var borrowTo = $('#BorrowTo').val();
+
+        $('#btnSearch_2').click(function () {
+            console.log("search button");
+            searchMapmAjax = $('#searchString_2').val();
+            getToController();
+        });
+
+        $('#searchString_2').change(function () {
+            console.log("Search input");
+            searchMapmAjax = $('#searchString_2').val();
+            getToController();
+        });
+
+        $('#SelectAnother').change(function () {
+            console.log("Search state");
+            trangThaiAjax = $('#SelectAnother').val();
+            getToController();
+
+        });
+
+        $('#BorrowFrom').change(function () {
+            console.log("Search from");
+            borrowFrom = $('#BorrowFrom').val();
+            getToController();
+        });
+
+        $('#BorrowTo').change(function () {
+            console.log("Search to");
+            borrowTo = $('#BorrowTo').val();
+            getToController();
+        });
+
+        function getToController() {
+            $.ajax({
+                url: '/Histroy/Index',
+                type: 'GET',
+                data: {
+                    searchMapm: searchMapmAjax,
+                    trangThai: trangThaiAjax,
+                    from: borrowFrom,
+                    to: borrowTo,
+                    page: 1
+                },
+                success: function (response) {
+                    console.log("Success");
+                    $('#PartialViewPhieuMuon').html(response);
+                },
+                error: function () {
+                    console.log("fail");
+                }
+            });
+        }
+        var stateView = '@ViewBag.trangthai';
+        if (stateView != "") {
+            $('#SelectAnother').val(stateView);
+        }
+
+        var fromView = '@ViewBag.fromDate';
+        if (fromView != "") {
+            console.log("view bag 2: " + fromView.toString("yyyy-MM-dd"));
+            console.log("view bag 3: " + fromView.toString('yyyy-MM-dd'));
+            var date = new Date(fromView.split(' ')[0]);
+            console.log("view bag 4: " + date);
+            console.log("view bag 4: " + date.getFullYear());
+            var formattedDate = date.getFullYear() + '-' +
+                ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+            console.log("formatted: " + formattedDate);
+            $('#BorrowFrom').val(formattedDate);
+        }
+        setTimeout(function () {
+            console.log("here");
+            $('.notify').css("display", "none");
+        }, 10000);
+    });
+
+</script>

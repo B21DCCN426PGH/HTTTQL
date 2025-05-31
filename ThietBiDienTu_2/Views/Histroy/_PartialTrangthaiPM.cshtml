@@ -1,0 +1,67 @@
+﻿@using ThietBiDienTu_2.Models.ViewModels;
+@model int;
+
+@if (Model == 0)
+{
+    <div class="custom-div info" style="cursor: default">
+        <svg class="icon icon-lg">
+            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-info")"></use>
+        </svg>
+        <span class="ml-1"> Chưa duyệt</span>
+    </div>
+}
+else if (Model == 1)
+{
+    <div class="custom-div danger" style="cursor: default">
+        <svg class="icon icon-lg">
+            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-history")"></use>
+        </svg>
+        <span class="ml-1"> Chưa trả</span>
+    </div>
+}
+else if (Model == 2)
+{
+    <div class="custom-div success" style="cursor: default">
+        <svg class="icon icon-lg">
+            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-check-circle")"></use>
+        </svg>
+        <span class="ml-1"> Đã duyệt</span>
+    </div>
+}
+else if (Model == 3)
+{
+    <div class="custom-div finish" style="cursor: default">
+        <svg class="icon icon-lg">
+            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-calendar-check")"></use>
+        </svg>
+        <span class="ml-1"> Đã trả</span>
+    </div>
+}
+else if (Model == 4)
+{
+    <div class="custom-div warning" style="cursor: default">
+        <svg class="icon icon-lg">
+            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-x-circle")"></use>
+        </svg>
+        <span class="ml-1"> Từ chối</span>
+    </div>
+}
+else if (Model == 5)
+{
+    <div class="custom-div cancelBorrow" style="cursor: default">
+        <svg class="icon icon-lg">
+            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-x")"></use>
+        </svg>
+        <span class="ml-1"> Hủy phiếu</span>
+    </div>
+}
+else if (Model == 6)
+{
+    <div class="custom-div notborrow" style="cursor: default">
+        <svg class="icon icon-lg">
+            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-warning")"></use>
+        </svg>
+        <span class="ml-1"> Không mượn</span>
+    </div>
+}
+

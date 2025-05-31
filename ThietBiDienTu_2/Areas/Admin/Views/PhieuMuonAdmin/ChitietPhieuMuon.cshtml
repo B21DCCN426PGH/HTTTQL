@@ -1,0 +1,192 @@
+﻿@using ThietBiDienTu_2.Areas.Admin.ViewModels;
+@using X.PagedList;
+@model PhieuMuonViewModel
+
+@section naviheader{
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="/Admin/PhieuMuonAdmin/DanhsachPhieuMuon">Danh sách phiếu mượn</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Chi tiết phiếu mượn</li>
+            </ol>
+        </nav>
+    </div>
+}
+<script>
+    $(document).ready(function () {
+        var error = '@ViewBag.error';
+        if (error != "") {
+            $('#exampleModal').modal('show');
+        }
+
+        $('.tuchoiShow').click(function () {
+            $('.spanTuchoi').text("");
+        });
+    });
+   
+</script>
+<form  asp-action="ChitietPhieuMuon" asp-controller="PhieuMuonAdmin" method="post">
+    <input asp-for="Mapm" value="@Model.Mapm" hidden />
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <div class="d-flex align-items-center">
+                        <h3 class="card-title mb-0 mr-3">Chi tiết phiếu mượn</h3>
+                        <partial name="_PartialTrangthaiPM" model="@Model.Trangthai" />
+                    </div>
+                </div>
+
+
+
+                @if (Model.Trangthai == 0)
+                {
+                   
+                    <div class="col-auto text-center">
+                        <div class="card-tools">
+                            <!-- Button trigger modal -->
+                            <button type="submit" asp-route-trangthai="2" class="btn btn-success btn-sm">
+                                <svg class="icon icon-lg">
+                                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-check-circle")"></use>
+                                </svg>
+                                Đồng ý
+                            </button>
+
+                            <button type="button" class="btn btn-warning btn-sm tuchoiShow" data-toggle="modal" data-target="#exampleModal">
+                                <svg class="icon icon-lg">
+                                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-x-circle")"></use>
+                                </svg>
+                                Từ chối
+                            </button>
+
+                        </div>
+                    </div>
+                }
+                @if (Model.Trangthai == 1 || Model.Trangthai == 3)
+                {
+                    <div class="col-auto text-center">
+                        <div class="card-tools">
+                            <button type="submit" asp-route-trangthai="@Model.Trangthai" class="btn btn-primary btn-sm">
+                                <svg class="icon icon-lg">
+                                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-check-alt")"></use>
+                                </svg>
+                                Xác nhận
+                            </button>
+                        </div>
+                    </div>
+                }
+                @if (Model.Trangthai == 2 && Model.Ngaymuon.Date == DateTime.Now.Date)
+                {
+                    <div class="col-auto text-center">
+                        <div class="card-tools">
+                            <button type="submit" asp-route-trangthai="1" class="btn btn-primary btn-sm">
+                                <svg class="icon icon-lg">
+                                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-check-alt")"></use>
+                                </svg>
+                                Xác nhận lấy thiết bị
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="card-body">
+            <h3 class="text-center">Thông tin phiếu mượn #@Model.Mapm</h3>
+            <partial name="_PartialPhieuMuonInfo" model="@Model" />
+
+            <h3 class="text-center mt-3"> Danh sách thiết bị mượn</h3>
+            <div class="accordion" id="accordionExample">
+                
+                <partial name="_PartialViewCtpmList" model="Model"/>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+
+                    <a asp-action="DanhsachPhieuMuon" asp-controller="PhieuMuonAdmin" class="btn btn-secondary btn-sm">Quay lại</a>
+
+                </div>
+                <div class="col-md-6">
+                    @if (Model.Trangthai == 1 || Model.Trangthai == 3)
+                    {
+                        <div class="card-tools float-right">
+                            <button type="submit" asp-route-trangthai="@Model.Trangthai" class="btn btn-primary btn-sm">
+                                <svg class="icon icon-lg">
+                                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-check-alt")"></use>
+                                </svg>
+                                Xác nhận
+                            </button>
+                        </div>
+                    }
+                    @if (Model.Trangthai == 0)
+                    {
+                        
+                        <div class="card-tools float-right">
+                            <button type="submit" asp-route-trangthai="2" class="btn btn-success btn-sm">
+                                <svg class="icon icon-lg">
+                                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-check-circle")"></use>
+                                </svg>
+                                Đồng ý
+                            </button>
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-warning btn-sm tuchoiShow" data-toggle="modal" data-target="#exampleModal">
+                                <svg class="icon icon-lg">
+                                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-x-circle")"></use>
+                                </svg>
+                                Từ chối
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Xác nhận từ chối?</h5>
+
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <select class="form-control" asp-for="@Model.LydoTuChoi">
+                                                <option value="">Chọn lý do từ chối </option>
+                                                <option value="Dấu hiệu spam">Spam</option>
+                                                <option value="Khác">Khác</option>
+                                            </select>
+                                            <span asp-validation-for="@Model.LydoTuChoi" class="text-danger spanTuchoi"></span>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                            <button type="submit" asp-route-trangthai="4" class="btn btn-primary">Xác nhận</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                        </div>
+
+                    }
+                    @if (Model.Trangthai == 2 && Model.Ngaymuon.Date == DateTime.Now.Date)
+                    {
+                        <div class="col-auto text-center float-right">
+                            <div class="card-tools">
+                                <button type="submit" asp-route-trangthai="1" class="btn btn-primary btn-sm">
+                                    <svg class="icon icon-lg">
+                                        <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-check-alt")"></use>
+                                    </svg>
+                                    Xác nhận lấy thiết bị
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+<div class="footer"></div>
+

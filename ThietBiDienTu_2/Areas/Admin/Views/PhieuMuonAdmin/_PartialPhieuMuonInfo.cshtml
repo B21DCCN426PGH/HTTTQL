@@ -1,0 +1,68 @@
+﻿@using ThietBiDienTu_2.Areas.Admin.ViewModels;
+@model PhieuMuonViewModel
+@{
+    var formattedNgayMuon = ((DateTime)Model.Ngaymuon.Date).ToString("dd/MM/yyyy");
+}
+
+<div class="row">
+    <div class="col-md-6" style="width:40%">
+        <div class="form-group mb-2">
+            <label class="mb-2" asp-for="@Model.Masv"><strong>Mã sinh viên: </strong></label>
+            <input class="form-control" asp-for="@Model.Masv" value="@Model.Masv" readonly style="background-color:#E8E8E8" />
+        </div>
+    </div>
+    <div class="col-md-6" style="width:60%">
+        <div class="form-group mb-2">
+            <label class="mb-2" asp-for="@Model.Tensv"><strong>Tên sinh viên: </strong></label>
+            <input class="form-control" asp-for="@Model.Tensv" value="@Model.Tensv" readonly style="background-color:#E8E8E8" />
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6" style="width:40%">
+        <div class="form-group mb-2">
+            <label class="mb-2" asp-for="@Model.TenKhoa"><strong>Khóa: </strong></label>
+            <input class="form-control" asp-for="@Model.TenKhoa" value="@Model.TenKhoa" readonly style="background-color:#E8E8E8" />
+        </div>
+    </div>
+    <div class="col-md-6" style="width:60%">
+        <div class="form-group mb-2">
+            <label class="mb-2" asp-for="@Model.TenNganh"><strong>Ngành: </strong></label>
+            <input class="form-control" asp-for="@Model.TenNganh" value="@Model.TenNganh" readonly style="background-color:#E8E8E8" />
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6" style="width:40%">
+        <div class="form-group mb-2">
+            <label class="mb-2" class="mb-2" asp-for="@Model.Ngaymuon"><strong>Ngày mượn: </strong></label>
+            <input type="datetime" class="form-control" asp-for="@Model.Ngaymuon.Date" value="@formattedNgayMuon" readonly style="background-color:#E8E8E8" />
+        </div>
+    </div>
+    <div class="col-md-6" style="width:60%">
+        <div class="form-group mb-2">
+            <label class="mb-2" asp-for="@Model.Ngaylap"><strong>Ngày lập phiếu mượn: </strong></label>
+
+            <input type="datetime" class="form-control" asp-for="@Model.Ngaylap" value="@Model.Ngaylap" readonly style="background-color:#E8E8E8" />
+        </div>
+    </div>
+</div>
+<div class="form-group mb-2">
+    <label class="mb-2" asp-for="@Model.Lydomuon"><strong>Lý do mượn:</strong> </label>
+    <input class="form-control" asp-for="@Model.Lydomuon" value="@Model.Lydomuon" readonly style="background-color:#E8E8E8" />
+</div>
+@if (Model.Trangthai == 4)
+{
+    <div class="form-group mb-2">
+        <label class="mb-2" asp-for="@Model.LydoTuChoi"><strong>Lý do từ chối:</strong> </label>
+        <input class="form-control" asp-for="@Model.LydoTuChoi" value="@Model.LydoTuChoi" readonly style="background-color:#E8E8E8" />
+    </div>
+}
+
+@if (Model.Trangthai == 5)
+{
+    <div class="form-group mb-2">
+        <label class="mb-2" asp-for="@Model.LydoHuy"><strong>Lý do hủy:</strong> </label>
+        <input class="form-control" asp-for="@Model.LydoHuy" value="@Model.LydoHuy" readonly style="background-color:#E8E8E8" />
+    </div>
+}

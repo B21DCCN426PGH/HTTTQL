@@ -1,0 +1,192 @@
+﻿@model X.PagedList.IPagedList<Khoa>
+
+
+<script>
+    $(document).ready(function () {
+        var pageNumber = '@Model.PageNumber';
+        var searchStringAjax = $('#searchString').val();
+
+        $('.page-link').click(function () {
+            pageNumber = $(this).attr('value');
+            getToController();
+        });
+
+        function getToController() {
+            $.ajax({
+                url: '/admin/Khoa/Index',
+                type: 'GET',
+                data: {
+                    searchString: searchStringAjax,
+                    page: pageNumber
+                },
+                success: function (response) {
+                    $('#PartialViewKhoa').html(response);
+                },
+                error: function () {
+                    console.log("fail");
+                }
+            });
+        }
+
+        $('.openUpdateKhoa').click(function () {
+            var makhoaView = $(this).attr('value');
+            $.ajax({
+                url: '/admin/Khoa/Edit',
+                type: 'GET',
+                data: {
+                    id: makhoaView
+                },
+                success: function (response) {
+                    console.table(response);
+                    $('#tenKhoaUpdate').val(response.tenkhoa);
+                    $('#makhoaUpdate').val(response.makhoa);
+
+                    $('#tenkhoaSpanUpdate').text("");
+                }
+            });
+        });
+
+        $('#btnKhoaUpdate').click(function () {
+            console.log("get in click update");
+            var check = true;
+            
+            var tenkhoaUpdate = $('#tenKhoaUpdate').val();
+            if (tenkhoaUpdate == "") {
+                console.log("hree");
+                $('#tenkhoaSpanUpdate').text("Vui lòng nhập tên khóa");
+                check = false;
+            }
+            if (check) {
+                console.log("niceasdas");
+                var makhoaView = $('#makhoaUpdate').val();
+                $.ajax({
+                    url: '/admin/Khoa/Edit',
+                    type: 'POST',
+                    data: {
+                        makhoa: makhoaView,
+                        tenkhoa: tenkhoaUpdate,
+                        searchString: searchStringAjax,
+                        page: pageNumber
+                    },
+                    success: function (response) {
+                        console.log("console: " + response);
+                        $('#PartialViewKhoa').html(response);
+                        console.log("test");
+                        closeModalPopup();
+                        $('#notifySuccess').text("Đã cập nhật khóa thành công");
+                        $('#notifySuccess').css("display", "block");
+                        setTimeout(function () {
+                            console.log("here");
+                            $('.notify').css("display", "none");
+                        }, 10000);
+                    }
+                });
+            }
+
+        });
+
+        function closeModalPopup() {
+            $('#exampleModalUpdate').removeClass('show');
+            $('#exampleModalUpdate').attr('aria-hidden', 'true');
+            $('#exampleModalUpdate').removeAttr('aria-modal');
+            $('#exampleModalUpdate').css({
+                'display': 'none',
+                'padding-right': ''
+            });
+            $('.modal-backdrop').remove();
+            console.log("Get to close modal popup");
+            $('body').removeClass('modal-open');
+            $('body').css({
+                'padding-right': ''
+            });
+
+
+        }
+    });
+</script>
+<table class="table table-striped">
+    <thead class="text-center">
+        <tr>
+            <th>STT</th>
+            <th>Tên Khóa</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody class="text-center">
+        @{
+            int count = Model.PageSize * (Model.PageNumber -1);
+        }
+        @foreach (var khoa in Model)
+        {
+            <tr>
+                <td>@(++count)</td>
+                <td>@khoa.Tenkhoa</td>
+                <td>
+                    <button value="@khoa.Makhoa" type="button" class="btn btn-info btn-sm rounded openUpdateKhoa" data-toggle="modal" data-target="#exampleModalUpdate">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-pen")"></use>
+                        </svg>
+                    </button>
+                    <a onclick="if (confirm('Xác nhận xóa khóa này?') == true) {location.href='/admin/Khoa/Delete/@khoa.Makhoa'}" class="btn btn-danger btn-sm rounded">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-trash")"></use>
+                        </svg>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="modal fade" id="exampleModalUpdate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cập nhật khóa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input hidden id="makhoaUpdate" />
+                <div class="form-group">
+                    <label class="control-label"><strong>Tên khóa<span class="text-danger"> *</span></strong></label>
+                    <input class="form-control" id="tenKhoaUpdate" placeholder="K19" />
+                    <span class="text-danger" id="tenkhoaSpanUpdate"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnKhoaUpdate" class="btn btn-primary">Cập nhật</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav>
+    <ul class="pagination justify-content-center">
+        <!-- First Page -->
+        @if (Model.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link" value="1">Đầu</a>
+            </li>
+        }
+
+        <!-- Page Numbers -->
+        @for (var i = 1; i <= Model.PageCount; i++)
+        {
+            <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                <a class="page-link" value="@i">@i</a>
+            </li>
+        }
+
+        <!-- Last Page -->
+        @if (Model.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link" value="@Model.PageCount">Cuối</a>
+            </li>
+        }
+    </ul>
+</nav>
+

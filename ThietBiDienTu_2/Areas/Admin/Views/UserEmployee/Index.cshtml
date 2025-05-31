@@ -1,0 +1,111 @@
+﻿@using ThietBiDienTu_2.Models;
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+@model X.PagedList.IPagedList<Nhanvien>
+@{
+    ViewData["Title"] = "UserEmployee";
+}
+<script>
+    $(document).ready(function () {
+        // Tìm kiếm khi nhấn nút Tìm kiếm
+        $('#searchButton').click(function () {
+            var searchString = $('#searchString').val();
+            searchStringAjax = searchString;
+            pageNumber = null; // Reset số trang về null khi tìm kiếm
+            getToController();
+        });
+        function getToController() {
+            $.ajax({
+                url: '/admin/UserEmployee/Index',
+                type: 'GET',
+                data: {
+                    searchString: searchStringAjax,
+                    page: pageNumber
+                },
+                success: function (response) {
+                    $('#PartialViewNv').html(response);
+                },
+                error: function () {
+                    console.log("fail");
+                }
+            });
+        }
+        // Tìm kiếm khi nhấn phím Enter trong input
+        $('#searchString').keypress(function (e) {
+            if (e.which === 13) {
+                var searchString = $('#searchString').val();
+                searchStringAjax = searchString;
+                pageNumber = null; // Reset số trang về null khi tìm kiếm
+                getToController();
+            }
+        });
+    });
+
+</script>
+@if (TempData["Action"] != null)
+{
+    <div class="alert alert-success notify">
+        <strong>Thành công!</strong> @TempData["Action"]
+    </div>
+}
+@if (TempData["Fail"] != null)
+{
+    <div class="alert alert-danger notify">
+        <strong>Thất bại!</strong> @TempData["Fail"]
+    </div>
+}
+@section searchArea {
+    <div class="input-group" style="width:40%">
+        <!-- Search bar -->
+        <input style="width:30%" name="searchStringNv" id="searchString"
+               type="search" placeholder="Tìm tên/mã nhân viên" class="form-control rounded" aria-label="Search">
+        <button class="btn btn-info rounded" type="submit" id="searchButton">
+            <svg class="icon icon-lg">
+                <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-search")"></use>
+            </svg>
+        </button>
+    </div>
+}
+
+@section naviheader{
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Danh sách nhân viên</li>
+            </ol>
+        </nav>
+    </div>
+}
+<div class="container mt-3">
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col">
+                <h3 class="card-title">Danh sách nhân viên</h3>
+            </div>
+            <div class="col-auto">
+                <div class="card-tools">
+                    <a href="/Admin/UserEmployee/Create" class="btn btn-primary btn-sm">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-plus")"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body ">
+        <div class="bs-stepper linear">
+            <div class="bs-stepper-content">
+                <div id="PartialViewNv">
+                    <partial name="PartialViewNv" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer"></div>

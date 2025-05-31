@@ -1,0 +1,149 @@
+﻿@model X.PagedList.IPagedList<Sinhvien>
+
+@{
+    ViewData["Title"] = "UserStudent";
+}
+    <script>
+        $(document).ready(function () {
+            var searchStringAjax = null;
+            var filterKhoaAjax = null;
+            var filterNganhAjax = null;
+
+            $('#searchString').change(function () {
+                var string = $(this).val();
+                searchStringAjax = string;
+                pageNumber = null;
+                getToController();
+            });
+
+            $('#filterKhoa').change(function () {
+                var string = $(this).val();
+                filterKhoaAjax = string;
+                getToController();
+            });
+
+            $('#filterNganh').change(function () {
+                var string = $(this).val();
+                filterNganhAjax = string;
+                getToController();
+            });
+            function getToController() {
+                $.ajax({
+                    url: '/admin/UserStudent/Index',
+                    type: 'GET',
+                    data: {
+                        searchStringController: searchStringAjax,
+                        filterKhoa: filterKhoaAjax,
+                        filterNganh: filterNganhAjax,
+                        pageNumber: 1
+                    },
+                    success: function (response) {
+                        $('#PartialViewSv').html(response);
+                    },
+                    error: function () {
+                        console.log("fail");
+                    }
+                });
+            }
+        $('#searchString').keypress(function (e) {
+            if (e.which === 13) { // Kiểm tra xem phím được nhấn có phải là Enter không
+                var string = $(this).val();
+                searchStringAjax = string;
+                getToController();
+                return false; // Ngăn chặn hành động mặc định của phím Enter trong trường nhập
+            }
+        });
+        });
+    </script>
+
+@section naviheader {
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Danh sách sinh viên</li>
+            </ol>
+        </nav>
+    </div>
+}
+
+@if (TempData["Action"] != null)
+{
+    <div class="alert alert-success notify">
+        <strong>Thành công!</strong> @TempData["Action"]
+    </div>
+}
+@if (TempData["Fail"] != null)
+{
+    <div class="alert alert-danger notify">
+        <strong>Thất bại!</strong> @TempData["Fail"]
+    </div>
+}
+
+@section searchArea {
+    <form id="searchForm" style="width:75%">
+        <div class="input-group" style="width:100%">
+            <!-- Search bar -->
+            <input style="width:30%" name="searchStringSv" id="searchString"
+                   type="search" placeholder="Tìm tên/mã sinh viên" class="form-control rounded" aria-label="Search">
+
+            <!-- Nút tìm kiếm -->
+            <button type="button" class="btn btn-info rounded" id="Searchbutton">
+                <svg class="icon icon-lg">
+                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-search")"></use>
+                </svg>
+            </button>
+
+            <!-- Filter dropdown 1 -->
+            <select id="filterKhoa" class="form-select rounded ms-3" style="width:26%">
+                <option value="">Chọn khóa</option>
+                @foreach (SelectListItem a in ViewBag.khoaType)
+                {
+                    <option value="@a.Value">@a.Text</option>
+                }
+            </select>
+            <!-- Filter dropdown 2 -->
+            <select id="filterNganh" class="form-select rounded ms-3" style="width:28%;">
+                <option value="">Chọn ngành</option>
+                @{
+                    foreach (SelectListItem a in ViewBag.nganhType)
+                    {
+                            <option value="@a.Value">@a.Text</option>
+                    }
+                }
+            </select>
+        </div>
+    </form>
+}
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col">
+                <h3 class="card-title">Danh sách sinh viên</h3>
+            </div>
+            <div class="col-auto">
+                <div class="card-tools">
+                    <a href="/Admin/UserStudent/Create" class="btn btn-primary btn-sm">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-plus")"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="bs-stepper linear">
+            <div class="bs-stepper-content">
+                <div id="PartialViewSv">
+                    @Html.Partial("PartialViewSv", Model)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="footer"></div>

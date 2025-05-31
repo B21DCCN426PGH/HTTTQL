@@ -1,0 +1,175 @@
+﻿@using ThietBiDienTu_2.Areas.Admin.ViewModels
+@using System.Web;
+@model TbFixAndCheck
+
+<button type="button" class="btn btn-info btn-sm rounded" data-toggle="modal" data-target="#exampleModal_@Model.Matb">
+    <svg class="icon icon-lg">
+        <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-pen")"></use>
+    </svg>
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal_@Model.Matb" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width:60%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cập nhật thông tin sửa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="CloseModalPopup">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Left Column for Image -->
+                    <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
+                        <img src="~/images/@Model.Hinhanh" id="imgProduct" class="img-fluid" alt="Product Image"
+                             style="border:solid 2px #ccc; max-height:80%;max-width:80%; border-radius:4px;">
+                        <div class="input-group mt-3" style="width:100%">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Ảnh thiết bị</span>
+                            <input readonly type="text" class="form-control" aria-label="Sizing example input" id="linkImage"
+                                   value="~/images/@Model.Hinhanh" aria-describedby="inputGroup-sizing-default">
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-left">
+                            <!-- your steps content here -->
+                            <div class="form-group mb-2">
+                                <label class="mb-2"><strong>Tên thiết bị</strong></label>
+                                <input class="form-control" value="@Model.Tentb" style="background-color:#E8E8E8" readonly />
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group mb-2">
+                                        <label class="mb-2"><strong>Seri thiết bị</strong></label>
+                                        <input value="@Model.Seri" class="form-control"  style="background-color:#E8E8E8" readonly />
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group mb-2">
+                                        <label class="mb-2"><strong>Tên kho</strong></label>
+                                        <input value="@(Model.Makho +" - "+@Model.TenKho)" class="form-control"  style="background-color:#E8E8E8" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group mb-2">
+                                <label asp-for="@Model.Chiphi" class="mb-2"><strong>Chi phí</strong></label>
+                            <input id="Chiphi_@Model.Matb" type="number"  value="@(Model.Chiphi.ToString("#."))" class="form-control" />
+                            <span class="text-danger" id="Chiphi_validation_@Model.Matb"></span>
+                            </div>
+                            <div class="form-group mb-2">
+                                <label class="mb-2"><strong>Mô tả</strong></label>
+                                <textarea id="Description_@Model.Matb" class="form-control" cols="40" rows="3">@(Model.Mota)</textarea>
+                            <span class="text-danger " id="Mota_validation_@Model.Matb"></span>
+                            </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="updateInfoFix_@Model.Matb">Lưu</button>
+                <button type="button" class="btn btn-secondary CloseModalPopup" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var pageChoosenView = '@ViewBag.Pagechoosen';
+        var matb = '@Model.Matb';
+        var mapsView = $('#mapsInput').val();
+
+        var validationChiphi = '@Html.Raw(HttpUtility.JavaScriptStringEncode(ViewBag.Chiphi))';
+        $('#Chiphi_validation_' + matb).text(validationChiphi);
+
+        var validationMota = '@Html.Raw(HttpUtility.JavaScriptStringEncode(ViewBag.Mota))';
+        $('#Mota_validation_' + matb).text(validationMota);
+
+        var chiphiTemp = '@ViewBag.ChiphiTemp';
+        if (chiphiTemp != "") {
+            $('#Chiphi_' + matb).val(chiphiTemp);
+        }
+
+        $('#updateInfoFix_'+matb).click(function () {
+            var matbView = '@Model.Matb';
+            var chiphiView = $('#Chiphi_' + matb).val();
+            var motaView = $('#Description_' + matb).val();
+            console.log("chi phi view : " +chiphiView);
+            if (chiphiView == "" || chiphiView == "0" || motaView == null || motaView == "") {
+                $.ajax({
+                    url: '/admin/Phieusua/ValidationUpdateInfoFixUpdate',
+                    type: 'Get',
+                    data: {
+                        maps : mapsView,
+                        matb: matbView,
+                        Chiphi: chiphiView,
+                        Mota: motaView,
+                        pageChoosen: pageChoosenView,
+                    },
+                    success:function(response){
+                       
+                        $('#showChoosen').html(response);
+
+                        openModalPopup();
+                    }
+                });
+
+            }
+            else {
+                getToUpdateInfoFix(matbView, chiphiView, motaView);
+            }
+        });
+
+        function getToUpdateInfoFix(matbView, chiphiView, motaView) {
+            $.ajax({
+                url: '/admin/Phieusua/updateInfoFixUpdate',
+                type: 'Get',
+                data: {
+                    maps : mapsView,
+                    matb : matbView,
+                    Chiphi: chiphiView,
+                    Mota: motaView,
+                    pageChoosen: pageChoosenView
+                },
+                success:function(response){
+                    $('#showChoosen').html(response);
+                    closeModalPopup();
+                }
+            });
+        }
+        $('.CloseModalPopup').click(function () {
+            $('#Chiphi_' + matb).val('@Model.Chiphi.ToString("#.")');
+            $('#Description_' + matb).val('@Model.Mota');
+            $('#Chiphi_validation_' + matb).text("");
+            $('#Mota_validation_' + matb).text("");
+            console.log("Get to click close popup ");
+            closeModalPopup();
+        });
+        function openModalPopup() {
+            $('#exampleModal_'+matb).addClass('show');
+            $('#exampleModal_'+matb).removeAttr('aria-hidden');
+            $('#exampleModal_'+matb).attr('aria-modal', 'true');
+            $('#exampleModal_'+matb).css({
+                'display': 'block',
+                'padding-right': '17px'
+            });
+        }
+
+        function closeModalPopup() {
+            $('#exampleModal_'+matb).removeClass('show');
+            $('#exampleModal_' + matb).attr('aria-hidden', 'true');
+            $('#exampleModal_' + matb).removeAttr('aria-modal');
+            $('#exampleModal_' + matb).css({
+                'display': 'none',
+                'padding-right': ''
+            });
+            $('.modal-backdrop').remove();
+            console.log("Get to close modal popup");
+            $('body').removeClass('modal-open');
+            $('body').css({
+                'padding-right': ''
+            });
+
+
+        }
+    });
+</script>

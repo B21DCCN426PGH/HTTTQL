@@ -1,0 +1,254 @@
+﻿@using ThietBiDienTu_2.Areas.Admin.ViewModels;
+@using ThietBiDienTu_2.Models;
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+@{
+    ViewData["Title"] = "Devices Detail";
+}
+
+@model X.PagedList.IPagedList<ThietBiViewAdmin>
+@section searchArea{
+    <form id="searchForm" action="@Url.Action("ThietBiList","ThietBi")" method="get" style="width:85%" class="d-none d-md-flex">
+        <div class="input-group">
+            <!-- Search bar -->
+            <input value="@ViewBag.searchStringThietBi" style="width:30%" name="searchStringThietBi" id="searchStringThietBi" type="search" placeholder="Tìm tên dòng/seri thiết bị..." class="form-control rounded" aria-label="Search">
+            <button class="btn btn-info rounded" type="submit" id="searchButtonTb">
+                <svg class="icon icon-lg">
+                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-search")"></use>
+                </svg>
+            </button>
+
+            <!-- Filter dropdown 1 -->
+            <select name="Coso" id="branchSelect" class="form-select rounded ms-3" style="width:10%">
+                <option value="all">Cơ sở</option>
+                @{
+                    foreach (SelectListItem item in ViewBag.CoSoList)
+                    {
+                                                                        <option value="@item.Value">@item.Text</option>
+                    }
+                }
+            </select>
+
+            <!-- Filter dropdown 2 -->
+            <select name="Phong" id="roomSelect" class="form-select rounded ms-3" style="width:15%">
+                <option value="all">Phòng</option>
+                @{
+                    foreach (SelectListItem item in ViewBag.PhongList)
+                    {
+                                                                        <option value="@item.Value">@item.Text.Split(',')[0]</option>
+                        //data-branch="@item.Text.Split(',')[1]"
+                    }
+                }
+            </select>
+            <select name="LoaiPhong" id="LoaiSelect" class="form-select rounded ms-3" style="width:14%;">
+                <option value="all">Loại phòng</option>
+                @{
+                    foreach (SelectListItem item in ViewBag.roomType)
+                    {
+                                                            <option value="@item.Value">@item.Text</option>
+                        //data-branch="@item.Text.Split(',')[1]"
+                    }
+                }
+            </select>
+            <!-- Filter dropdown 3 -->
+            <select name="Trangthai" id="stateSelect" class="form-select rounded ms-3" style="width:13%;">
+                <option value="all">Trạng thái</option>
+                @{
+                    foreach (SelectListItem item in ViewBag.stateSelect)
+                    {
+                                                                <option value="@item.Value">@item.Text</option>
+                        //data-branch="@item.Text.Split(',')[1]"
+                    }
+                }
+            </select>
+        </div>
+    </form>
+
+}
+
+@section naviheader{
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Thiết bị trong phòng</li>
+            </ol>
+        </nav>
+    </div>
+}
+
+@if (TempData["Action"] != null)
+{
+    <div class="alert alert-success notify">
+        <strong>Thành công!</strong> @TempData["Action"]
+    </div>
+}
+@if(TempData["Fail"] != null)
+{
+    <div class="alert alert-danger notify">
+        <strong>Thất bại!</strong> @TempData["Fail"]
+    </div>
+}
+<!-- Content Header (Page header) -->
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col">
+                <h3 class="card-title">Thiết bị trong phòng</h3>
+            </div>
+            <div class="col-auto">
+                <div class="card-tools">
+                    <a asp-action="CreateThietBi" asp-controller="ThietBi" class="btn btn-primary btn-sm">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-plus")"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body ">
+        <div class="bs-stepper linear">
+            <div class="bs-stepper-content">
+                <div id="partialList">
+                <partial name="PartialViewTBList" model="Model"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="footer"></div>
+
+<script>
+    $(document).ready(function () {
+        var viewBagState = '@ViewBag.State';
+        if (viewBagState != "") {
+            $('#stateSelect').val("Đang hư");
+        }
+        setTimeout(function () {
+            console.log("here");
+            $('.notify').css("display", "none");
+        }, 10000);
+
+        var searchStringView = $('#searchStringThietBi').val();
+        var cosoView = $('#branchSelect').val();
+        var phongView = $('#roomSelect').val();
+        var loaiPhongView = $('#LoaiSelect').val();
+        var trangthaiView = $('#stateSelect').val();
+
+        $('#searchStringThietBi').change(function () {
+            searchStringView = $(this).val();
+            getToFilter();
+        });
+
+        $('#searchButtonTb').click(function () {
+            searchStringView = $('#searchStringThietBi').val();
+            getToFilter();
+        });
+
+        $('#branchSelect').change(function () {
+
+            cosoView = $(this).val();
+            $.ajax({
+                url: '/Admin/ThietBi/getPhongList',
+                type: 'GET',
+                data: {
+                    macs: cosoView,
+                },
+                success: function (response) {
+                    var roomSelect = $('#roomSelect');
+                    roomSelect.empty();
+                    roomSelect.append('<option value="all">Phòng</option>');
+                    $.each(response, function (index, item) {
+                        roomSelect.append($('<option>', {
+                            value: item.value,
+                            text: item.text
+                        }));
+                    });
+                }
+            });
+            phongView = "all";
+
+            $.ajax({
+                url: '/Admin/ThietBi/getLoaiPhongList',
+                type: 'GET',
+                data: {
+                    map: phongView,
+                },
+                success: function (response) {
+                    var loaiSelect = $('#LoaiSelect');
+                    loaiSelect.empty();
+                    loaiSelect.append('<option value="all">Loại phòng</option>');
+                    $.each(response, function (index, item) {
+                        loaiSelect.append($('<option>', {
+                            value: item.value,
+                            text: item.text
+                        }));
+                    });
+                }
+            });
+            loaiPhongView = "all";
+
+            getToFilter();
+        });
+
+        $('#roomSelect').change(function () {
+            phongView = $(this).val();
+
+            $.ajax({
+                url: '/Admin/ThietBi/getLoaiPhongList',
+                type: 'GET',
+                data: {
+                    map: phongView,
+                },
+                success: function (response) {
+                    var loaiSelect = $('#LoaiSelect');
+                    loaiSelect.empty();
+                    loaiSelect.append('<option value="all">Loại phòng</option>');
+                    $.each(response, function (index, item) {
+                        loaiSelect.append($('<option>', {
+                            value: item.value,
+                            text: item.text
+                        }));
+                    });
+                }
+            });
+
+            getToFilter();
+        });
+
+        $('#LoaiSelect').change(function () {
+            loaiPhongView = $(this).val();
+            getToFilter();
+        });
+
+        $('#stateSelect').change(function () {
+            trangthaiView = $(this).val();
+            getToFilter();
+        });
+
+
+        function getToFilter() {
+            $.ajax({
+                url: '/Admin/ThietBi/ThietBiList',
+                type: 'GET',
+                data: {
+                    page: 1,
+                    searchStringThietBi: searchStringView,
+                    Coso: cosoView,
+                    Phong: phongView,
+                    LoaiPhong: loaiPhongView,
+                    Trangthai: trangthaiView
+                },
+                success: function (response) {
+                    $('#partialList').html(response);
+                }
+            });
+        }
+    });
+    
+</script>

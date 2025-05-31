@@ -1,0 +1,112 @@
+﻿@using ThietBiDienTu_2.Areas.Admin.ViewModels;
+@model X.PagedList.IPagedList<ThietBiViewAdmin>
+<script>
+    $(document).ready(function () {
+        var searchStringView = $('#searchStringThietBi').val();
+        var cosoView = $('#branchSelect').val();
+        var phongView = $('#roomSelect').val();
+        var loaiPhongView = $('#LoaiSelect').val();
+        var trangthaiView = $('#stateSelect').val();
+        var pageView = null;
+
+        $('.page-link').click(function () {
+            pageView = $(this).attr('value');
+            getToFilter();
+        });
+
+        function getToFilter() {
+            $.ajax({
+                url: '/Admin/ThietBi/ThietBiList',
+                type: 'GET',
+                data: {
+                    page : pageView ,
+                    searchStringThietBi: searchStringView,
+                    Coso : cosoView, 
+                    Phong: phongView, 
+                    LoaiPhong: loaiPhongView, 
+                    Trangthai : trangthaiView
+                },
+                success: function (response) {
+                    $('#partialList').html(response);
+                }
+            });
+        }
+    });
+    
+</script>
+<table class="table table-striped">
+    <thead>
+        <tr class="text-center">
+            <th>STT</th>
+            <th>Ảnh</th>
+            <th>Tên dòng thiết bị</th>
+            <th>Seri</th>
+            <th>Cơ sở</th>
+            <th>Phòng</th>
+            <th>Loại phòng</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody class="text-center" style="vertical-align: middle;">
+        @{
+            int index = (Model.PageNumber - 1) * Model.PageSize;
+        }
+        @foreach (ThietBiViewAdmin ctthietbi in Model)
+        {
+            ++index;
+            <tr class="text-center">
+                <td>@index</td>
+                <td>
+                    <img class="imgProduct" src="~/images/@ctthietbi.HinhAnh">
+                </td>
+                <td>@ctthietbi.DongThietBi</td>
+                <td>@ctthietbi.Seri</td>
+                <td>@ctthietbi.CoSo</td>
+                <td>@ctthietbi.MaP - @ctthietbi.Phong</td>
+                <td>@ctthietbi.LoaiPhong</td>
+                <td>@ctthietbi.TrangThai</td>
+                <td>
+                    <a asp-action="UpdateThietBi" asp-route-Id="@ctthietbi.Matb" class="btn btn-info btn-sm rounded">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-pen")"></use>
+                        </svg>
+                    </a>
+
+                    <a onclick="if (confirm('Xác nhận xóa thiết bị này?') == true) {location.href='@Url.Action("DeleteThietBi", "ThietBi", new { id = ctthietbi.Matb })'}" class="btn btn-danger btn-sm rounded">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-trash")"></use>
+                        </svg>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<nav>
+    <ul class="pagination justify-content-center">
+        <!-- First Page -->
+        @if (Model.PageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" value="1">Đầu</a>
+            </li>
+        }
+
+        <!-- Page Numbers -->
+        @for (var i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, Model.PageCount); i++)
+        {
+            <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                <a class="page-link" value="@i">@i</a>
+            </li>
+        }
+
+        <!-- Last Page -->
+        @if (Model.PageNumber < Model.PageCount)
+        {
+            <li class="page-item">
+                <a class="page-link" value="@Model.PageCount">Cuối</a>
+            </li>
+        }
+    </ul>
+</nav>

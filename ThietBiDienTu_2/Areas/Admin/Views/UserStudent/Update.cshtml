@@ -1,0 +1,147 @@
+﻿@{
+    ViewData["Title"] = "CreateEmployee";
+}
+
+@model ThietBiDienTu_2.Areas.Admin.ViewModels.StuAcc
+@section naviheader{
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="/Admin/UserStudent/Index">Danh sách sinh viên</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Cập nhật sinh viên</li>
+            </ol>
+        </nav>
+    </div>
+}
+<!-- Content Header (Page header) -->
+<div class="card">
+    <div class="card-header">
+        <h3>Cập nhật sinh viên</h3>
+    </div>
+    <div class="card-body ">
+        <div class="bs-stepper linear">
+            <div class="bs-stepper-content">
+                @using (Html.BeginForm("Update", "UserStudent", FormMethod.Post, new { }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    
+                <!-- your steps content here -->
+                        <div class="row">
+                        <div class="col-md-6" style="width:40%">
+                                <div class="form-group mb-2">
+                                    <label for="sv.Masv" class="mb-2"><strong>Mã sinh viên<span class="text-danger"> *</span></strong></label>
+                                    @Html.TextBoxFor(x => x.sv.Masv, new { @class = "form-control",@id="masvInput" })
+                                    @Html.ValidationMessageFor(x => x.sv.Masv, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6" style="width:60%">
+                                <div class="form-group mb-2">
+                                    <label for="sv.Tensv" class="mb-2"><strong>Tên sinh viên<span class="text-danger"> *</span></strong></label>
+                                    @Html.TextBoxFor(x => x.sv.Tensv, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.sv.Tensv, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    <div class="row">
+                        <div class="col-md-6" style="width:40%">
+                            <div class="form-group mb-2">
+                                <label for="Khoa" class="mb-2"><strong>Khoá<span class="text-danger"> *</span></strong></label>
+                                <select asp-for="@Model.sv.Makhoa" class="form-control">
+                                    <option value="0">Chọn khóa</option>
+                                    @foreach (SelectListItem a in ViewBag.khoaType)
+                                    {
+                                        <option value="@a.Value">@a.Text</option>
+                                    }
+                                </select>
+
+                                @Html.ValidationMessageFor(x => x.sv.Makhoa, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="width:60%">
+                            <div class="form-group mb-2">
+                                <label for="Nganh" class="mb-2"><strong>Ngành<span class="text-danger"> *</span></strong></label>
+                                <select asp-for="@Model.sv.Manganh" class="form-control">
+                                    <option value="0">Chọn ngành</option>
+                                    @foreach (SelectListItem a in ViewBag.nganhType)
+                                    {
+                                        <option value="@a.Value">@a.Text</option>
+                                    }
+                                </select>
+
+                                @Html.ValidationMessageFor(x=>x.sv.Manganh,null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                        <div class="row">
+                        <div class="col-md-6" style="width:40%">
+                             <div class="form-group mb-2">
+                                    <label for="sv.Ngaysinh" class="mb-2"><strong>Ngày sinh<span class="text-danger"> *</span></strong></label>
+                                    @Html.TextBoxFor(x => x.sv.Ngaysinh,"{0:dd/MM/yyyy}", new { @class = "form-control",placeholder="DD/MM/YYYY"})
+                                    @Html.ValidationMessageFor(x => x.sv.Ngaysinh, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6" style="width:60%">
+                                <div class="form-group mb-2">
+                                    <label for="acc.Password" class="mb-2"><strong>Mật khẩu<span class="text-danger"> *</span></strong></label>
+                                    @Html.TextBoxFor(x => x.acc.Matkhau, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.acc.Matkhau, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                        <div class="col-md-6" style="width:40%">
+                                <div class="form-group mb-2">
+                                    <label for="sv.Sdt" class="mb-2"><strong>Số điện thoại<span class="text-danger"> *</span></strong></label>
+                                    @Html.TextBoxFor(x => x.sv.Sdt, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.sv.Sdt, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6" style="width:60%">
+                                <div class="form-group mb-2">
+                                    <label for="sv.Email" class="mb-2"><strong>Email<span class="text-danger"> *</span></strong></label>
+                                    @Html.TextBoxFor(x => x.sv.Email, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.sv.Email, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label for="nv.Gioitinh"><strong>Giới tính<span class="text-danger"> *  </span></strong></label>
+                            @Html.RadioButtonFor(x => x.sv.Gioitinh, "Nam") Nam @Html.RadioButtonFor(x => x.sv.Gioitinh, "Nữ") Nữ
+                            <div class="text-danger">
+                                @Html.ValidationMessageFor(x => x.sv.Gioitinh, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group mb-2">
+                                    <label for="sv.Diachi" class="mb-2"><strong>Địa chỉ</strong></label>
+                                    @Html.TextBoxFor(x => x.sv.Diachi, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.sv.Diachi, null, new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                       
+                        @Html.HiddenFor(x => x.acc.Loaitk)
+                        @Html.HiddenFor(x => x.acc.Matk)
+                        <input asp-for="@Model.sv.MasvNavigation.Matk" value="123" hidden />
+                        <input asp-for="@Model.sv.MasvNavigation.Matkhau" value="123" hidden />
+                        <input asp-for="@Model.sv.ManganhNavigation.Manganh" value="123" hidden />
+                        <input asp-for="@Model.sv.MakhoaNavigation.Makhoa" value="123" hidden />
+                        <input asp-for="@Model.sv.ManganhNavigation.Tennganh" value="123" hidden />
+                        <input asp-for="@Model.sv.MakhoaNavigation.Tenkhoa" value="123" hidden />
+                        <div class="form-group mt-3">
+                        <button type="submit" class="btn btn-primary">Cập nhật</button>
+                            <a href="/Admin/UserStudent/Index" class="btn btn-danger">Quay lại</a>
+                           
+                        </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="footer"></div>

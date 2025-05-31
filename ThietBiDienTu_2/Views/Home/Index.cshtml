@@ -1,0 +1,88 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Quản lý thiết bị";
+    var studentName = ViewBag.StudentName as string;
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            $("#notification").fadeOut("slow");
+        }, 5000); // 5 giây
+    });
+</script>
+<style>
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #fff;
+        padding: 10px 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 9999;
+    }
+
+        .notification p {
+            color: black; /* Màu đen cho dòng chữ */
+        }
+        .maxH{
+            height:128px;
+        }
+</style>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Card View</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <div id="notification" class="notification">
+            <p>Xin chào <span id="username">@studentName</span>!</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-3 ">
+            <a href="@Url.Action("Index", "Histroy",new{from=DateTime.Now.Date})" class="card-link">
+                <div class="card bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title text-white">Phiếu mượn hôm nay</h5>
+                        <p class="card-text text-white"></p>
+                        <p class="card-text text-white"><strong>Số lượng: @ViewBag.todayCount </strong></p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3 ">
+            <a href="@Url.Action("Index", "Histroy",new{trangThai=0})" class="card-link">
+                <div class="card bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title text-white">Tổng số phiếu mượn chưa duyệt</h5>
+                        <p class="card-text text-white"></p>
+                        <p class="card-text text-white"><strong>Số lượng: @ViewBag.CDCount</strong></p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 md-3  ">
+            <a href="@Url.Action("Index", "Histroy",new{trangthai=1})" class="card-link">
+                <div class="card bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title text-white">Tổng số phiếu mượn chưa trả</h5>
+                        <p class="card-text text-white"></p>
+                        <p class="card-text text-white"><strong>Số lượng: @ViewBag.CTCount</strong></p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,113 @@
+﻿@model X.PagedList.IPagedList<Phieusua>
+
+
+<script>
+    $(document).ready(function () {
+        var pageView = null;
+        var searchStringView = $('#searchString_2').val();
+        var trangthaiView = $('#SelectState').val();
+        var ngaylaptuView = $('#CreateFrom').val();
+        var ngaylapdenView = $('#CreateTo').val();
+
+
+        $('.page-link').click(function () {
+            pageView = $(this).attr('value');
+            getToFilter();
+        });
+
+        function getToFilter() {
+            $.ajax({
+                url: '/admin/Phieusua/DanhsachPhieuSua',
+                type: 'Get',
+                data: {
+                    page: pageView,
+                    searchString: searchStringView,
+                    trangthai: trangthaiView,
+                    NgaylapTu: ngaylaptuView,
+                    NgaylapDen: ngaylapdenView
+                },
+                success: function (response) {
+                    $('#partialDs').html(response);
+                }
+            });
+        }
+    });
+</script>
+<table class="table table-striped">
+    <thead>
+        <tr class="text-center">
+            <th>STT</th>
+            <th>Mã phiếu sửa</th>
+            <th>Ngày lập</th>
+            <th>Trạng thái</th>
+            <th>Tổng chi phí</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int indexCount = (Model.PageNumber - 1) * Model.PageSize;
+        }
+        @foreach (Phieusua ps in Model)
+        {
+            ++indexCount;
+            var formattedDateNgayLap = ((DateTime)ps.Ngaylap).ToString("dd/MM/yyyy");
+            <tr class="text-center">
+                <td>@indexCount</td>
+                <td>@ps.Maps</td>
+                <td>@ps.Ngaylap</td>
+                <td>
+                    <partial name="PartialViewTrangthaisua" model="@ps.Trangthai">
+                </td>
+                <td>
+                    <div class="custom-div success" style="cursor: default">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-money")"></use>
+                        </svg>
+                        <span class="ml-1"> @ps.Tongchiphi?.ToString("#,##0")đ</span>
+                    </div>
+                </td>
+
+                <td>
+                    <a asp-action="UpdatePS" asp-controller="Phieusua" asp-route-maps="@ps.Maps" class="btn btn-info btn-sm rounded">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-pen")"></use>
+                        </svg>
+                    </a>
+                    <a onclick="if (confirm('Xác nhận xóa phiếu sửa này?') == true) {location.href='/Admin/Phieusua/DeletePs/@(ps.Maps)'}" class="btn btn-danger btn-sm rounded">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-trash")"></use>
+                        </svg>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<nav>
+    <ul class="pagination justify-content-center">
+        <!-- First Page -->
+        @if (Model.PageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" value="1">Đầu</a>
+            </li>
+        }
+
+        <!-- Page Numbers -->
+        @for (var i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, Model.PageCount); i++)
+        {
+            <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                <a class="page-link" value="@i">@i</a>
+            </li>
+        }
+
+        <!-- Last Page -->
+        @if (Model.PageNumber < Model.PageCount)
+        {
+            <li class="page-item">
+                <a class="page-link" value="@Model.PageCount">Cuối</a>
+            </li>
+        }
+    </ul>
+</nav>

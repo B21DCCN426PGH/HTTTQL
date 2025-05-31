@@ -1,0 +1,415 @@
+﻿@model ThietBiDienTu_2.Models.ViewModels.PhieuMuonViewModel
+@{
+    var formattedNgayMuon = ((DateTime)Model.NgayDat?.Date).ToString("dd/MM/yyyy");
+    string serializedData = Newtonsoft.Json.JsonConvert.SerializeObject(Model.ctpmView);
+}
+@section naviheader {
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="/Histroy">Lịch sử phiếu mượn</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Chi tiết phiếu mượn</li>
+            </ol>
+        </nav>
+    </div>
+}
+<script>
+    $(document).ready(function () {
+        // $('#rejectButton').click(function () {
+        //     $('#exampleModal').modal('show');
+        // });
+
+        // $('#exampleModalCancel').on('hidden.bs.modal', function () {
+        //     // Redirect to the previous page when the modal is closed
+        //     window.history.back();
+        // });
+
+        // $('#exampleModalCancel').on('hidden.bs.modal', function () {
+        //     // Show success message after 10 seconds
+        //     setTimeout(function () {
+        //         $('#successMessage').hide();
+        //     }, 10000); // 10 seconds
+        // });
+
+        // Function to set checked state of hidden input based on checkbox state
+        function checkValue(index) {
+            var checkView = document.getElementById('flexCheckDefault_' + index);
+            var hiddenCheck = document.getElementById('checkValue_' + index);
+            hiddenCheck.checked = checkView.checked;
+        }
+
+        // Serialized data passed from server-side
+        var ctpmViewData = @Html.Raw(serializedData);
+
+        // Function to check if all checkboxes in a row are checked and update UI accordingly
+        function checkBegin() {
+            for (var i = 0; i < ctpmViewData.length; ++i) {
+                var count = 0;
+                var soluong = ctpmViewData[i].Soluong;
+                for (var a = 0; a < soluong; a++) {
+                    if ($('#checkValue_' + i + '_' + a).prop('checked')) {
+                        ++count;
+                    }
+                }
+                var productCheckElement = $('#productCheck_' + i);
+                if (count == soluong) {
+                    productCheckElement.html('<svg class="icon icon-lg"><use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-calendar-check")"></use></svg><span class="ml-1">Trả đủ<span>');
+                    productCheckElement.removeClass('danger');
+                    productCheckElement.addClass('finish');
+                }
+                else {
+                    productCheckElement.html('<svg class="icon icon-lg"><use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-history")"></use></svg> <span class="ml-1">Thiếu ' + (soluong - count) + '<span>');
+                    productCheckElement.removeClass('finish');
+                    productCheckElement.addClass('danger');
+                }
+            }
+        }
+
+        // Call checkBegin function when checkbox state changes
+        $('.form-check-input').click(function () {
+            checkBegin();
+        });
+
+        // Initial call to checkBegin function
+        checkBegin();
+        $('#openHuy').click(function () {
+            $('#spanHuy').text("");
+        });
+        // Handle click event for confirm button in modal
+        $('#confirmRejectButton').click(function () {
+            var lydoHuy = $('#lydoHuySelect').val(); // Get the value of selected reason
+            var mapm = $('#Mapm').val(); // Get the value of Mapm
+            console.log("In confirm reject");
+            console.log("Lydo huy: " + lydoHuy);
+            if(lydoHuy == ""){
+                $('#spanHuy').text("Vui lòng chọn lý do hủy");
+            }
+            else{
+                $.ajax({
+                    url: '@Url.Action("HuyPhieuMuon", "Histroy")',
+                    type: 'Get',
+                    data: { id: mapm, lydoHuy: lydoHuy }, // Send Mapm and selected reason to server
+                    success: function (response) {
+                        // Redirect to the Index page
+                        window.location.href = '@Url.Action("Index", "Histroy")';
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        // Handle error
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+            
+        });
+    });
+</script>
+
+
+<input id="Mapm" value="@Model.Mapm" type="hidden" />
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col">
+                <div class="d-flex align-items-center">
+                    <h3 class="card-title mb-0 mr-3">Chi tiết phiếu mượn</h3>
+                    <partial name="_PartialTrangthaiPM" model="@Model.Trangthai" />
+                </div>
+            </div>
+
+                @if (Model.Trangthai == 0 || Model.Trangthai == 2)
+                {
+                    <div class="col-auto text-center">
+                        <div class="card-tools">
+
+                            <button type="button" class="btn btn-dark btn-sm" id="openHuy"
+                                    data-toggle="modal" data-target="#exampleModalCancel">
+                                <svg class="icon icon-lg">
+                                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-x")"></use>
+                                </svg>
+                                Hủy phiếu
+                            </button>
+
+                            <div class="modal fade" id="exampleModalCancel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Xác nhận hủy?</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <select class="form-control" id="lydoHuySelect">
+                                                <option value="">Chọn lý do hủy</option>
+                                                <option value="Hủy câu lạc bộ">Hủy câu lạc bộ</option>
+                                                <option value="Khác">Khác</option>
+                                            </select>
+                                            <span class="text-danger text-left" id="spanHuy"></span>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                            <button type="button" id="confirmRejectButton" class="btn btn-primary">Xác nhận</button>
+                                        </div>
+                                    </div>
+
+        
+
+                                </div>
+                            </div>
+
+                            
+                        </div>
+                    </div>
+                }
+
+        </div>
+    </div>
+    <div class="card-body">
+
+        <div class="col text-center">
+            <h3 class="card-title">Thông tin phiếu mượn #@Model.Mapm</h3>
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-md-6" style="width:40%">
+                <div class="form-group mb-2">
+                    <label class="mb-2" asp-for="@Model.Masv"><strong>Mã sinh viên: </strong></label>
+                    <input class="form-control" asp-for="@Model.Masv" value="@Model.Masv" readonly style="background-color:#E8E8E8" />
+                </div>
+            </div>
+            <div class="col-md-6" style="width:60%">
+                <div class="form-group mb-2">
+                    <label class="mb-2" asp-for="@Model.Tensv"><strong>Tên sinh viên: </strong></label>
+                    <input class="form-control" asp-for="@Model.Tensv" value="@Model.Tensv" readonly style="background-color:#E8E8E8" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6" style="width:40%">
+                <div class="form-group mb-2">
+                    <label class="mb-2" asp-for="@Model.TenKhoa"><strong>Khóa: </strong></label>
+                    <input class="form-control" asp-for="@Model.TenKhoa" value="@Model.TenKhoa" readonly style="background-color:#E8E8E8" />
+                </div>
+            </div>
+            <div class="col-md-6" style="width:60%">
+                <div class="form-group mb-2">
+                    <label class="mb-2" asp-for="@Model.TenNganh"><strong>Ngành: </strong></label>
+                    <input class="form-control" asp-for="@Model.TenNganh" value="@Model.TenNganh" readonly style="background-color:#E8E8E8" />
+                </div>
+            </div>
+        </div>
+       <div class="row">
+    <div class="col-md-6" style="width:40%">
+        <div class="form-group mb-2">
+            <label class="mb-2" class="mb-2" asp-for="@Model.NgayDat"><strong>Ngày mượn: </strong></label>
+            <input type="datetime" class="form-control" asp-for="@Model.NgayDat" value="@formattedNgayMuon" readonly style="background-color:#E8E8E8" />
+        </div>
+    </div>
+    <div class="col-md-6" style="width:60%">
+        <div class="form-group mb-2">
+            <label class="mb-2" asp-for="@Model.Ngaylap"><strong>Ngày lập phiếu mượn: </strong></label>
+
+            <input type="datetime" class="form-control" asp-for="@Model.Ngaylap" value="@Model.Ngaylap" readonly style="background-color:#E8E8E8" />
+        </div>
+    </div>
+</div>
+        <div class="form-group mb-2">
+            <label class="mb-2" asp-for="@Model.Lydomuon"><strong>Lý do mượn:</strong> </label>
+            <input class="form-control" asp-for="@Model.Lydomuon" readonly style="background-color:#E8E8E8" />
+        </div>
+        @{
+            if (Model.Trangthai == 4)
+            {
+                        <div class="form-group mb-2">
+                            <label class="mb-2" asp-for="@Model.LydoTuChoi"><strong>Lý do từ chối:</strong> </label>
+                            <input class="form-control" asp-for="@Model.LydoTuChoi" readonly style="background-color:#E8E8E8" />
+                        </div>
+            }
+            else if (Model.Trangthai == 5)
+            {
+                        <div class="form-group mb-2">
+                            <label class="mb-2" asp-for="@Model.LydoHuy"><strong>Lý do hủy phiếu:</strong> </label>
+                            <input class="form-control" asp-for="@Model.LydoHuy" readonly style="background-color:#E8E8E8" />
+                        </div>
+            }
+                    <h3 class="text-center mt-3"> Danh sách thiết bị mượn</h3>
+
+                    @if (Model.Trangthai == 1 || Model.Trangthai == 3)
+            {
+                        <div class="accordion" id="accordionExample">
+                            @for (int i = 0; i < Model.ctpmView.Count; ++i)
+                    {
+                                <input asp-for="@Model.ctpmView[i].Madongtb" hidden />
+
+
+
+                                <div class="accordion-item mb-3">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed d-flex justify-content-between align-items-center" type="button" data-coreui-toggle="collapse" data-coreui-target="#collapse(@Model.ctpmView.ElementAt(i).Madongtb)" aria-expanded="true" aria-controls="collapse(@Model.ctpmView.ElementAt(i).Madongtb)">
+                                            <div class="d-flex align-items-center">
+                                                <img src="~/images/@Model.ctpmView.ElementAt(i).Hinhanh" style="width:55px;height:55px" />
+                                                <div class="ml-3">
+                                                    <h5>@Model.ctpmView.ElementAt(i).Tendongthietbi</h5>
+                                                    <h6><strong>Số lượng: @Model.ctpmView.ElementAt(i).Soluong</strong></h6>
+                                                </div>
+
+
+                                            </div>
+                                            @if (Model.Trangthai == 1 || Model.Trangthai == 3)
+                                    {
+                                        if (Model.ctpmView.ElementAt(i).Ngaytra.All(x => x.Year > 2010))
+                                        {
+                                                    <div class="custom-div ml-auto finish">
+                                                        <svg class="icon icon-lg">
+                                                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-calendar-check")">
+                                                            </use>
+                                                        </svg><span class="ml-1">Trả đủ<span>
+                                                    </div>
+                                        }
+                                        else
+                                        {
+
+                                            var soLuong = Model.ctpmView.ElementAt(i).Ngaytra.Count(x => x.Year < 2010);
+                                                    <div class="custom-div ml-auto danger">
+                                                        <svg class="icon icon-lg"><use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-history")"></use></svg> <span class="ml-1">
+                                                            Thiếu @soLuong<span>
+                                                    </div>
+                                        }
+
+                                    }
+
+                                        </button>
+
+                                    </h2>
+                                    <div id="collapse(@Model.ctpmView.ElementAt(i).Madongtb)" class="accordion-collapse collapse" data-coreui-parent="#accordionExample">
+                                        <div class="accordion-body">
+
+                                            <table class="table table-striped ">
+                                                <thead class="text-center">
+                                                    <tr class="text-center">
+                                                        <th>STT</th>
+                                                        <th>Seri thiết bị</th>
+                                                        <th>Ngày trả</th>
+                                                        <th>Đã trả</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="text-center">
+
+                                                    @for (int j = 0; j < Model.ctpmView.ElementAt(i).Soluong; j++)
+                                            {
+                                                int a = j + 1;
+                                                        <tr class="text-center">
+                                                            <td>@a</td>
+                                                            <td>@Model.ctpmView.ElementAt(i).Seri[j]</td>
+                                                            <td>@(Model.ctpmView.ElementAt(i).Ngaytra[j].Year > 2010 ? Model.ctpmView.ElementAt(i).Ngaytra[j] : "")</td>
+                                                            <td>
+                                                                <input class="form-check-input" type="checkbox" disabled @(Model.ctpmView.ElementAt(i).Ngaytra[j].Year > 2010 ? "checked" : "")>
+                                                            </td>
+                                                        </tr>
+                                            }
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                    }
+                        </div>
+            }
+            else
+            {
+                        <table class="table table-striped ">
+                            <thead class="text-center">
+                                <tr class="text-center">
+                                    <th>STT</th>
+                                    <th>Ảnh</th>
+                                    <th>Tên thiết bị</th>
+                                    <th>Số lượng</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                @{
+                            int a = 0;
+                                }
+                                @for (int i=0;i<Model.ctpmView.Count();++i)
+                        {
+                                    <input asp-for="@Model.ctpmView[i].Madongtb" hidden />
+                                    <tr>
+                                        <td>@(++a)</td>
+                                        <td class="text-center">
+                                            <img src="@Url.Content("~/images/" + Model.ctpmView[i].Hinhanh)" class="card-image-top thumbnail-image" />
+                                        </td>
+                                        <td>@Model.ctpmView[i].Tendongthietbi</td>
+                                        <td>@Model.ctpmView[i].Soluong</td>
+                                    </tr>
+
+                        }
+                            </tbody>
+                        </table>
+            }
+        }
+        <div class="row">
+            
+              <div class="col-md-6">
+
+                    <a asp-action="Index" asp-controller="Histroy" class="btn btn-primary">Quay lại</a>
+
+                </div>
+                <div class="col-md-6">
+             @if (Model.Trangthai == 0 || Model.Trangthai == 2)
+                {
+                    <div class="col-auto text-center">
+                        <div class="card-tools float-right">
+
+                            <button type="button" class="btn btn-dark btn-sm"
+                                    data-toggle="modal" data-target="#exampleModalCancel">
+                                <svg class="icon icon-lg">
+                                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-x")"></use>
+                                </svg>
+                                Hủy phiếu
+                            </button>
+
+                            <div class="modal fade" id="exampleModalCancel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Xác nhận hủy?</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <select class="form-control" id="lydoHuySelect">
+                                                <option value="">Chọn lý do hủy</option>
+                                                <option value="Hủy câu lạc bộ">Hủy câu lạc bộ</option>
+                                                <option value="Khác">Khác</option>
+                                            </select>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                            <button type="button" id="confirmRejectButton" class="btn btn-primary">Xác nhận</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                        </div>
+                    </div>
+             }
+                </div>
+        </div>
+    </div>
+</div>
+<div class="footer"></div>
+<style>
+    .thumbnail-image {
+        max-width: 60px; /* Adjust the maximum width as needed */
+        max-height: 60px; /* Adjust the maximum height as needed */
+    }
+</style>

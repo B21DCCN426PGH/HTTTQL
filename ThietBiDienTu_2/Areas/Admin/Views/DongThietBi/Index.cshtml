@@ -1,0 +1,124 @@
+﻿@model IEnumerable<ThietBiDienTu_2.Areas.Admin.ViewModels.DongThietBiViewModel>
+
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+@{
+    ViewData["Title"] = "Index";
+}
+<script>
+    $(document).ready(function () {
+        // Tìm kiếm khi nhấn nút Tìm kiếm
+        $('#searchButton').click(function () {
+            var searchString = $('#searchString').val();
+            searchStringAjax = searchString;
+            pageNumber = null; // Reset số trang về null khi tìm kiếm
+            getToController();
+        });
+        function getToController() {
+            $.ajax({
+                url: '/admin/DongThietBi/Index',
+                type: 'GET',
+                data: {
+                    searchString: searchStringAjax,
+                    page: pageNumber
+                },
+                success: function (response) {
+                    $('#PartialViewDongtb').html(response);
+                },
+                error: function () {
+                    console.log("fail");
+                }
+            });
+        }
+        // Tìm kiếm khi nhấn phím Enter trong input
+        $('#searchString').keypress(function (e) {
+            if (e.which === 13) {
+                var searchString = $('#searchString').val();
+                searchStringAjax = searchString;
+                pageNumber = null; // Reset số trang về null khi tìm kiếm
+                getToController();
+            }
+        });
+    });
+    setTimeout(function () {
+        console.log("here");
+        $('#notify').css("display", "none");
+    }, 10000);
+</script>
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-success" id="notify">
+        <strong>Thành công!</strong> @TempData["AlertMessage"]
+    </div>
+}
+@if (TempData["DangerMessage"] != null)
+{
+    <div class="alert alert-danger" id="notify">
+        <strong>Thất bại!</strong> @TempData["DangerMessage"]
+
+    </div>
+}
+@section searchArea {
+    <div class="input-group" style="width:40%">
+        <!-- Search bar -->
+        <input style="width:30%" name="searchStringDongtb" id="searchString"
+               type="search" placeholder="Tìm tên dòng thiết bị" class="form-control rounded" aria-label="Search">
+        <button class="btn btn-info rounded" type="submit" id="searchButton">
+            <svg class="icon icon-lg">
+                <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-search")"></use>
+            </svg>
+        </button>
+    </div>
+}
+@section naviheader{
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Dòng thiết bị</li>
+            </ol>
+        </nav>
+    </div>
+}
+<div class="container mt-3">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <h3 class="card-title">Danh sách dòng thiết bị</h3>
+                </div>
+                <div class="col-auto">
+                    <div class="card-tools">
+                        <a asp-action="CreateTool" asp-controller="DongThietBi" class="btn btn-primary btn-sm">
+                            <svg class="icon icon-lg">
+                                <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-plus")"></use>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="bs-stepper linear">
+                <div class="bs-stepper-content">
+                    <div id="PartialViewDongtb">
+                        <partial name="PartialViewDongtb" model="Model" />
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer"></div>
+
+
+<style>
+    .thumbnail-image {
+        max-width: 60px; /* Adjust the maximum width as needed */
+        max-height: 60px; /* Adjust the maximum height as needed */
+    }
+</style>

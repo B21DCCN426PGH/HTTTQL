@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\ThietBiDienTu_2.props" />
+</Project>

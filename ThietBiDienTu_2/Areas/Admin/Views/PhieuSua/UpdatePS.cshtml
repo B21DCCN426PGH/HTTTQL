@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "CreateEmployee";
+}
+@using ThietBiDienTu_2.Areas.Admin.ViewModels
+@model UpdatePSViewModel
+@section naviheader{
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="/Admin/Phieusua/DanhsachPhieuSua">Danh sách phiếu sửa</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Cập nhật phiếu sửa</li>
+            </ol>
+        </nav>
+    </div>
+}
+
+<!-- Content Header (Page header) -->
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col">
+                <div class="d-flex align-items-center">
+                <h3 class="card-title mr-2">Cập nhật phiếu sửa #@Model.Maps</h3>
+                <div id="partialTrangthai">
+                        <partial name="PartialViewTrangthaisua" model="@Model.Trangthai">
+                </div>
+                    </div>
+            </div>
+
+            <div class="col-auto text-center">
+                <div class="card-tools">
+                    <a class="btn btn-primary btn-sm submitButton" asp-route-maps="@Model.Maps" asp-action="UpdatePsViewFinal" asp-controller="Phieusua">
+                        Cập nhật
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <h3 class="text-center">Danh sách thiết bị</h3>
+        <div id="showChoosen">
+            <partial name="PartialViewUpdateList" model="Model" />
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+
+                <a asp-action="DanhsachPhieuSua" asp-controller="Phieusua" class="btn btn-secondary btn-sm">Quay lại</a>
+
+            </div>
+            <div class="col-md-6">
+                <div class="card-tools float-right">
+                    <a class="btn btn-primary btn-sm submitButton" asp-route-maps="@Model.Maps" asp-action="UpdatePsViewFinal" asp-controller="Phieusua">
+                        Cập nhật
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="footer"></div>
+<style>
+    .thumbnail-image {
+        max-width: 60px; /* Adjust the maximum width as needed */
+        max-height: 60px; /* Adjust the maximum height as needed */
+    }
+</style>

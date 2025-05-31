@@ -1,0 +1,211 @@
+﻿@model X.PagedList.IPagedList<ThietBiDienTu_2.Models.Coso>
+
+
+<script>
+    $(document).ready(function () {
+        var pageNumber = '@Model.PageNumber';
+        var searchStringAjax = $('#searchString').val();
+
+        $('.page-link').click(function () {
+            console.log("Test page");
+            pageNumber = $(this).attr('value');
+            getToController();
+        });
+
+
+        function getToController() {
+            $.ajax({
+                url: '/admin/Coso/Index',
+                type: 'GET',
+                data: {
+                    searchString: searchStringAjax,
+                    page: pageNumber
+                },
+                success: function (response) {
+                    $('#PartialViewCoSo').html(response);
+                },
+                error: function () {
+                    console.log("fail");
+                }
+            });
+        }
+        $('.openUpdateCs').click(function () {
+            var macsView = $(this).attr('value');
+            $.ajax({
+                url: '/admin/Coso/Edit',
+                type: 'GET',
+                data: {
+                    id : macsView
+                },
+                success: function (response) {
+                    console.log("response: " + response);
+                    console.table(response);
+                    console.log("dia chi: " + response.diachi);
+                    $('#tencsUpdate').val(response.tencs);
+                    $('#diachiUpdate').val(response.diachi);
+                    $('#macsUpdate').val(response.macs);
+
+                    $('#tencsSpanUpdate').text("");
+                    $('#diachiSpanUpdate').text("");
+                }
+            });
+        });
+
+        $('#btnCsUpdate').click(function () {
+            console.log("get in click update");
+            var check = true;
+            var diachiCreate = $('#diachiUpdate').val();
+            if (diachiCreate == "") {
+                $('#diachiSpanUpdate').text("Vui lòng nhập địa chỉ cơ sở");
+                check = false;
+            }
+
+            var tencsCreate = $('#tencsUpdate').val();
+            if (tencsCreate == "") {
+                $('#tencsSpanUpdate').text("Vui lòng nhập tên cơ sở");
+                check = false;
+            }
+            if (check) {
+                var macsView = $('#macsUpdate').val();
+                $.ajax({
+                    url: '/admin/Coso/Edit',
+                    type: 'POST',
+                    data: {
+                        macs : macsView,
+                        tencs: tencsCreate,
+                        diachi: diachiCreate,
+                        searchString : searchStringAjax,
+                        page: pageNumber
+                    },
+                    success: function (response) {
+                        console.log("console: " + response);
+                        $('#PartialViewCoSo').html(response);
+                        console.log("test");
+                        closeModalPopup();
+                        $('#notifySuccess').text("Đã cập nhật cơ sở thành công");
+                        $('#notifySuccess').css("display", "block");
+                        setTimeout(function () {
+                            console.log("here");
+                            $('.notify').css("display", "none");
+                        }, 10000);
+                    }
+                });
+            }
+
+        });
+
+        function closeModalPopup() {
+            $('#exampleModalUpdate').removeClass('show');
+            $('#exampleModalUpdate').attr('aria-hidden', 'true');
+            $('#exampleModalUpdate').removeAttr('aria-modal');
+            $('#exampleModalUpdate').css({
+                'display': 'none',
+                'padding-right': ''
+            });
+            $('.modal-backdrop').remove();
+            console.log("Get to close modal popup");
+            $('body').removeClass('modal-open');
+            $('body').css({
+                'padding-right': ''
+            });
+
+
+        }
+    });
+</script>
+
+<table class="table table-striped">
+    <thead class="text-center">
+        <tr>
+            <th>STT</th>
+            <th>Tên cơ sở</th>
+            <th>Địa chỉ</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody class="text-center">
+        @{
+            int count = 0;
+        }
+        @foreach (var coso in Model)
+        {
+            <tr>
+                <td>@(++count)</td>
+                <td>@coso.Tencs</td>
+                <td>@coso.Diachi</td>
+                <td>
+                    <button value="@coso.Macs" type="button" class="btn btn-info btn-sm rounded openUpdateCs" data-toggle="modal" data-target="#exampleModalUpdate">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-pen")"></use>
+                        </svg>
+                    </button>
+                    <a onclick="if (confirm('Xác nhận xóa cơ sở?') == true) {location.href='/admin/Coso/Delete/@coso.Macs'}" class="btn btn-danger btn-sm rounded">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-trash")"></use>
+                        </svg>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalUpdate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cập nhật cơ sở</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <input hidden id="macsUpdate"/>
+                <div class="form-group">
+                    <label class="control-label"><strong>Tên cơ sở<span class="text-danger"> *</span></strong></label>
+                    <input class="form-control" id="tencsUpdate" placeholder="Elliot"/>
+                    <span class="text-danger" id="tencsSpanUpdate"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label"><strong>Địa chỉ<span class="text-danger"> *</span></strong></label>
+                    <input class="form-control" id="diachiUpdate" placeholder="2A PhamVanDong"/>
+                    <span class="text-danger" id="diachiSpanUpdate"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCsUpdate" class="btn btn-primary">Cập nhật</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav>
+    <ul class="pagination justify-content-center">
+        <!-- First Page -->
+        @if (Model.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link" value="1">Đầu</a>  
+            </li>
+        }
+
+        <!-- Page Numbers -->
+        @for (var i = 1; i <= Model.PageCount; i++)
+        {
+            <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                <a class="page-link" value="@i">@i</a>
+            </li>
+        }
+
+        <!-- Last Page -->
+        @if (Model.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link" value="@Model.PageCount">Cuối</a>
+            </li>
+        }
+    </ul>
+</nav>
+

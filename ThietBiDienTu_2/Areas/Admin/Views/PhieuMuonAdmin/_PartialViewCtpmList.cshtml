@@ -1,0 +1,212 @@
+﻿@using ThietBiDienTu_2.Areas.Admin.ViewModels;
+@using X.PagedList;
+@model PhieuMuonViewModel
+@{
+    string serializedData = Newtonsoft.Json.JsonConvert.SerializeObject(Model.ctpmView);
+    List<Thietbi> tbList = new List<Thietbi>();
+    PagedList<Thietbi> pagetbList = new PagedList<Thietbi>(tbList, 1, 5);
+
+}
+<script>
+    function checkValue(index) {
+        var checkView = document.getElementById('flexCheckDefault_' + index);
+        var hiddenCheck = document.getElementById('checkValue_' + index);
+        hiddenCheck.checked = checkView.checked;
+    }
+
+    var ctpmViewData = @Html.Raw(serializedData);
+
+    $(document).ready(function () {
+
+        function checkBegin() {
+            for (var i = 0; i < ctpmViewData.length; ++i) {
+                var count = 0;
+                var soluong = ctpmViewData[i].Soluong;
+                for (var a = 0; a < soluong; a++) {
+                    if ($('#checkValue_' + i + '_' + a).prop('checked')) {
+                        ++count;
+                    }
+                }
+                var productCheckElement = $('#productCheck_' + i);
+                if (count == soluong) {
+                    productCheckElement.html('<svg class="icon icon-lg"><use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-calendar-check")"></use></svg><span class="ml-1">Trả đủ<span>');
+                    productCheckElement.removeClass('danger');
+                    productCheckElement.addClass('finish');
+                }
+                else {
+                    productCheckElement.html('<svg class="icon icon-lg"><use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-history")"></use></svg> <span class="ml-1">Thiếu ' + (soluong - count) + '<span>');
+                    productCheckElement.removeClass('finish');
+                    productCheckElement.addClass('danger');
+                }
+            }
+
+        }
+
+        $('.form-check-input').click(function () {
+            checkBegin();
+        });
+
+        checkBegin();
+
+        $('.changeDevicesClick').click(function () {
+            var matbView = $(this).attr('value');
+            var mapm = '@Model.Mapm';
+            $.ajax({
+                url: '/admin/PhieuMuonAdmin/ChangeDevices',
+                type: 'Get',
+                data: {
+                    matb: matbView,
+                    mapm: mapm
+                },
+                success: function (response) {
+                    console.log("Success click change");
+                    $('#_PartialViewChangeDevices').html(response);
+                    openModalPopup();
+                }
+            });
+        });
+
+        function openModalPopup() {
+            $('#changeDevice').addClass('show');
+            $('#changeDevice').removeAttr('aria-hidden');
+            $('#changeDevice').attr('aria-modal', 'true');
+            $('#changeDevice').css({
+                'display': 'block',
+                'padding-right': '17px'
+            });
+        }
+    });
+
+</script>
+<div id="ctpmListPartial">
+@for (int i = 0; i < Model.ctpmView.Count; ++i)
+{
+    <input asp-for="@Model.ctpmView[i].Madongtb" hidden />
+    for (int a = 0; a < Model.ctpmView[i].Soluong; a++)
+    {
+        <input asp-for="@Model.ctpmView[i].Matb[a]" hidden />
+        <input asp-for="@Model.ctpmView[i].check[a]" id="checkValue_@(i)_@(a)" hidden />
+        <input type="datetime" asp-for="@Model.ctpmView[i].Ngaytra[a]" hidden />
+    }
+    <div class="accordion-item mb-3">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed d-flex justify-content-between align-items-center" type="button" data-coreui-toggle="collapse"
+                        id="button(@Model.ctpmView.ElementAt(i).Madongtb)" data-coreui-target="#collapse(@Model.ctpmView.ElementAt(i).Madongtb)" 
+                        aria-expanded="true" aria-controls="collapse(@Model.ctpmView.ElementAt(i).Madongtb)">
+                <div class="d-flex align-items-center">
+                    <img src="~/images/@Model.ctpmView.ElementAt(i).Hinhanh" style="width:55px;height:55px" />
+                    <div class="ml-3">
+                        <h5>@Model.ctpmView.ElementAt(i).Tendongthietbi</h5>
+                        <h6><strong>Số lượng: @Model.ctpmView.ElementAt(i).Soluong</strong></h6>
+                    </div>
+
+
+                </div>
+                @if (Model.Trangthai == 1 || Model.Trangthai == 3)
+                {
+                    <div class="custom-div ml-auto" id="productCheck_@(i)">
+                    </div>
+                }
+
+            </button>
+
+        </h2>
+        <div id="collapse(@Model.ctpmView.ElementAt(i).Madongtb)" class="accordion-collapse collapse" data-coreui-parent="#accordionExample">
+            <div class="accordion-body">
+                @if (Model.Trangthai == 0 || Model.Trangthai == 2)
+                {
+                    <table class="table table-striped ">
+                        <thead class="text-center">
+                            <tr class="text-center">
+                                <th>STT</th>
+                                <th>Seri thiết bị</th>
+                                <th>Kho</th>
+                                <th>Đổi thiết bị</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+
+                            @for (int j = 0; j < Model.ctpmView[i].Seri.Count; j++)
+                            {
+                                int a = j + 1;
+                                <tr class="text-center">
+                                    <td>@a</td>
+                                    <td>@Model.ctpmView.ElementAt(i).Seri[j]</td>
+                                    <td>@Model.ctpmView.ElementAt(i).TenKho[j]</td>
+                                    <td>
+
+                                        <a value="@Model.ctpmView[i].Matb[j]"
+                                           class="changeDevicesClick btn btn-info btn-sm rounded">
+                                            <svg class="icon icon-lg">
+                                                <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-sync")"></use>
+                                            </svg>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else if(Model.Trangthai < 4)
+                {
+                    <table class="table table-striped ">
+                        <thead class="text-center">
+                            <tr class="text-center">
+                                <th>STT</th>
+                                <th>Seri thiết bị</th>
+                                <th>Kho</th>
+                                <th>Ngày trả</th>
+                                <th>Đã trả</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+
+                            @for (int j = 0; j < Model.ctpmView.ElementAt(i).Soluong; j++)
+                            {
+                                int a = j + 1;
+                                <tr class="text-center">
+                                    <td>@a</td>
+                                    <td>@Model.ctpmView.ElementAt(i).Seri[j]</td>
+                                    <td>@Model.ctpmView.ElementAt(i).TenKho[j]</td>
+                                    <td>@(Model.ctpmView.ElementAt(i).Ngaytra[j].Year > 2010 ? Model.ctpmView.ElementAt(i).Ngaytra[j] : "")</td>
+                                    <td>
+                                        <input asp-for="@Model.ctpmView.ElementAt(i).check[j]"
+                                               class="form-check-input" type="checkbox" onclick="checkValue('@(i)_@(j)')" id="flexCheckDefault_@(i)_@(j)">
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <table class="table table-striped ">
+                            <thead class="text-center">
+                                <tr class="text-center">
+                                    <th>STT</th>
+                                    <th>Seri thiết bị</th>
+                                    <th>Kho</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+
+                                @for (int j = 0; j < Model.ctpmView[i].Seri.Count; j++)
+                                {
+                                    int a = j + 1;
+                                    <tr class="text-center">
+                                        <td>@a</td>
+                                        <td>@Model.ctpmView.ElementAt(i).Seri[j]</td>
+                                        <td>@Model.ctpmView.ElementAt(i).TenKho[j]</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+            </div>
+        </div>
+    </div>
+}
+</div>
+<div id="_PartialViewChangeDevices">
+    <partial name="_PartialViewChangeDevices" model="pagetbList" />
+</div>

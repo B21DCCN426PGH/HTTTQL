@@ -1,0 +1,114 @@
+﻿@model X.PagedList.IPagedList<Sinhvien>
+
+<script>
+    $(document).ready(function () {
+        var pageNumber = null;
+        var searchStringAjax = '@ViewBag.searchStringController';
+        var filterKhoaAjax = '@ViewBag.filterKhoar';
+        var filterNganhAjax = '@ViewBag.filterNganh'; 
+        $('.page-link').click(function () {
+            var pageNumber = $(this).attr('value');
+            getToController(pageNumber);
+        });
+
+        function getToController(pageNumber) {
+            var searchStringAjax = $('#searchString').val();
+            var filterKhoaAjax = $('#filterKhoa').val();
+            var filterNganhAjax = $('#filterNganh').val();
+
+            $.ajax({
+                url: '/admin/UserStudent/Index',
+                type: 'GET',
+                data: {
+                    searchStringController: searchStringAjax,
+                    filterKhoa: filterKhoaAjax,
+                    filterNganh: filterNganhAjax,
+                    page: pageNumber
+                },
+                success: function (response) {
+                    $('#PartialViewSv').html(response);
+                },
+                error: function () {
+                    console.log("fail");
+                }
+            });
+        }
+    });
+</script>
+<table class="table table-striped">
+    <thead>
+        <tr class="text-center">
+            <th>STT</th>
+            <th>Mã sv</th>
+            <th>Tên</th>
+            <th>Giới tính</th>
+            <th>Ngày sinh</th>
+            <th>Khoá</th>
+            <th>Ngành</th>
+            <th>Số điện thoại</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int index = (Model.PageNumber - 1) * Model.PageSize;
+        }
+        @foreach (Sinhvien sv in Model)
+        {
+            ++index;
+            var formattedDate = sv.Ngaysinh.ToString("dd/MM/yyyy");
+            <tr class="text-center">
+                <td>@index</td>
+                <td>@sv.Masv</td>
+                <td>@sv.Tensv</td>
+                <td>@sv.Gioitinh</td>
+                <td>@formattedDate</td>
+                <td>@(sv.MakhoaNavigation?.Tenkhoa)</td>
+                <td>@(sv.ManganhNavigation?.Tennganh)</td>
+                <td>@sv.Sdt</td>
+                <td>
+                    <a href="/admin/userStudent/Update/@sv.Masv" class="btn btn-info btn-sm rounded">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-pen")"></use>
+                        </svg>
+                    </a>
+                    <a onclick="if (confirm('Xác nhận xóa sinh viên?') == true) {location.href='/admin/userStudent/Delete/@sv.Masv'}" class="btn btn-danger btn-sm rounded">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-trash")"></use>
+                        </svg>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination justify-content-center">
+        <!-- First Page -->
+        <!-- First Page -->
+        @if (Model.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link" value="1">Đầu</a>
+            </li>
+        }
+
+        <!-- Page Numbers -->
+        @for (var i = 1; i <= Model.PageCount; i++)
+        {
+            <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                <a class="page-link" value="@i">@i</a>
+            </li>
+        }
+
+        <!-- Last Page -->
+        @if (Model.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link" value="@Model.PageCount">Cuối</a>
+            </li>
+        }
+    </ul>
+</nav>
+

@@ -1,0 +1,148 @@
+﻿@model X.PagedList.IPagedList<ThietBiDienTu_2.Areas.Admin.ViewModels.DongThietBiViewModel>
+
+<script>
+    $(document).ready(function () {
+        var pageNumber = null;
+        var searchStringAjax = '@ViewBag.searchString';
+
+        $('.page-link').click(function () {
+            pageNumber = $(this).attr('value');
+            getToController();
+        });
+
+        function getToController() {
+            $.ajax({
+                url: '/admin/DongThietBi/Index',
+                type: 'GET',
+                data: {
+                    searchString: searchStringAjax,
+                    page: pageNumber
+                },
+                success: function (response) {
+                    $('#PartialViewDongtb').html(response);
+                },
+                error: function () {
+                    console.log("fail");
+                }
+            });
+        }
+    });
+
+</script>
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.ErrorMessage
+        </div>
+    }
+    @if (ViewBag.DangerMessage != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.DangerMessage
+        </div>
+    }
+    @if (ViewBag.SuccessMessage != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @ViewBag.SuccessMessage
+        </div>
+    }
+
+
+    <div class="table-responsive">
+        <table class="table table-striped text-center">
+            <thead>
+                <tr class="text-center">
+                    <th>STT</th>
+                    <th>Ảnh</th>
+                    <th>Tên Thiết bị</th>
+                    <th>Tổng SL</th>
+                    <th>HĐ</th>
+                    <th>SS</th>
+                    <th>Hư</th>
+                    <th>Mượn</th>
+                    <th>Sửa</th>
+                    <th>TL</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                @{
+                    int a = (Model.PageNumber-1)*Model.PageSize;
+                }
+                @foreach (var dtb in Model)
+                {
+                <tr class="text-center">
+                        <td>@(++a)</td>
+                        <td >
+                            <img src="@Url.Content("~/images/" + dtb.Hinhanh)" class="card-image-top thumbnail-image" />
+                        </td>
+                        <td >@Html.DisplayFor(modelItem => dtb.Tendongtb)</td>
+                        <td >@Html.DisplayFor(modelItem => dtb.Soluong)</td>
+                        <td >@dtb.SoLuongHoatDong</td>
+                         <td>@dtb.SoLuongTonKho</td>
+                        <td>@dtb.SoLuongHu</td>
+                         <td>@dtb.SoluongMuon</td>
+                          <td>@dtb.SoluongSua</td>
+                        <td >@dtb.SoluongTL</td>
+                        <td >
+                            <a class="btn btn-success btn-sm rounded" asp-controller="ThietBi" asp-action="ThietBiList" asp-route-searchStringThietBi="@dtb.Tendongtb">
+                                <svg class="icon icon-lg">
+                                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-file")"></use>
+                                </svg>
+                            </a>
+                            <a class="btn btn-info btn-sm rounded" asp-controller="DongThietBi" asp-action="Edit" asp-route-id="@dtb.Madongtb">
+                                <svg class="icon icon-lg">
+                                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-pen")"></use>
+                                </svg>
+                            </a>
+                            <a onclick="if (confirm('Xác nhận xóa dòng thiết bị này?') == true) {location.href='@Url.Action("Delete", "DongThietBi", new { id = dtb.Madongtb })'}" class="btn btn-danger btn-sm rounded">
+                                <svg class="icon icon-lg">
+                                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-trash")"></use>
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                    @if (dtb.NeedsMoreDevices)
+                    {
+                        <tr>
+                            <td colspan="11" class="text-center text-warning">
+                                <strong>Cần thêm thiết bị cho dòng này!</strong>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+<nav>
+    <ul class="pagination justify-content-center">
+        <!-- First Page -->
+        @if (Model.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link" value="1">Đầu</a>
+            </li>
+        }
+
+        <!-- Page Numbers -->
+        @for (var i = 1; i <= Model.PageCount; i++)
+        {
+            <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                <a class="page-link" value="@i">@i</a>
+            </li>
+        }
+
+        <!-- Last Page -->
+        @if (Model.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link" value="@Model.PageCount">Cuối</a>
+            </li>
+        }
+    </ul>
+</nav>
+

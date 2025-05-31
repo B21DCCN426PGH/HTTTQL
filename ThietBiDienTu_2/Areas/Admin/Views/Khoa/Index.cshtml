@@ -1,0 +1,188 @@
+﻿@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<Khoa>
+
+<script>
+    $(document).ready(function () {
+        var searchStringAjax = null;
+        var pageNumber = null;
+
+        $('#searchString').change(function () {
+            var string = $(this).val();
+            searchStringAjax = string;
+            getToController();
+        });
+
+        function getToController() {
+            $.ajax({
+                url: '/admin/Khoa/Index',
+                type: 'GET',
+                data: {
+                    searchString: searchStringAjax,
+                },
+                success: function (response) {
+                    $('#PartialViewKhoa').html(response);
+                },
+                error: function () {
+                    console.log("fail");
+                }
+            });
+        }
+
+        $('#openCreateKhoa').click(function () {
+            $('#tenKhoaCreate').val("");
+
+            $('#tenkhoaSpanCreate').text("");
+        });
+
+        $('#btnKhoaCreate').click(function () {
+            var check = true;
+
+            var tenkhoaCreate = $('#tenKhoaCreate').val();
+            if (tenkhoaCreate == "") {
+                $('#tenkhoaSpanCreate').text("Vui lòng nhập tên khóa");
+                check = false;
+            }
+            if (check) {
+                $.ajax({
+                    url: '/admin/Khoa/Create',
+                    type: 'GET',
+                    data: {
+                        tenKhoa: tenkhoaCreate,
+                    },
+                    success: function (response) {
+                        console.log("console: " + response);
+                        $('#PartialViewKhoa').html(response);
+                        console.log("test");
+                        closeModalPopup();
+                        
+                    }
+                });
+                $('#notifySuccess').text("Đã tạo khóa thành công");
+                $('#notifySuccess').css("display", "block");
+                setTimeout(function () {
+                    console.log("here");
+                    $('.notify').css("display", "none");
+                }, 10000);
+            }
+
+        });
+
+        function closeModalPopup() {
+            $('#exampleModal').removeClass('show');
+            $('#exampleModal').attr('aria-hidden', 'true');
+            $('#exampleModal').removeAttr('aria-modal');
+            $('#exampleModal').css({
+                'display': 'none',
+                'padding-right': ''
+            });
+            $('.modal-backdrop').remove();
+            console.log("Get to close modal popup");
+            $('body').removeClass('modal-open');
+            $('body').css({
+                'padding-right': ''
+            });
+
+
+        }
+        if ('@TempData["Action"]' != "") {
+            $('#notifySuccess').css("display", "block");
+        }
+        setTimeout(function () {
+            console.log("here");
+            $('.notify').css("display", "none");
+        }, 10000);
+    });
+
+</script>
+@section naviheader{
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Danh sách khóa</li>
+            </ol>
+        </nav>
+    </div>
+}
+
+<div class="alert alert-success notify" role="alert" id="notifySuccess" style="display:none">
+    <strong>Thành công!</strong> @TempData["Action"]
+</div>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger notify">
+        @TempData["ErrorMessage"]
+    </div>
+}
+@section searchArea {
+    <div class="input-group" style="width:40%">
+        <!-- Search bar -->
+        <input style="width:30%" name="searchStringKhoa" id="searchString"
+               type="search" placeholder="Tìm tên khóa" class="form-control rounded" aria-label="Search">
+        @*Id la thuoc tinh phan biet cac html tag*@
+        <button class="btn btn-info rounded" type="submit" id="Searchbutton">
+            <svg class="icon icon-lg">
+                <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-search")"></use>
+            </svg>
+        </button>
+    </div>
+}
+
+    <!-- Phân trang -->
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col">
+                <h3 class="card-title">Danh sách khóa</h3>
+            </div>
+            <div class="col-auto">
+                <div class="card-tools">
+                    <button type="button" id="openCreateKhoa" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-plus")"></use>
+                        </svg>
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Tạo khóa mới</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label class="control-label"><strong>Tên khóa<span class="text-danger"> *</span></strong></label>
+                                        <input class="form-control" id="tenKhoaCreate" placeholder="K19"/>
+                                        <span class="text-danger" id="tenkhoaSpanCreate"></span>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" id="btnKhoaCreate" class="btn btn-primary">Tạo</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body ">
+        <div class="bs-stepper linear">
+            <div class="bs-stepper-content">
+                <div id="PartialViewKhoa">
+                <partial name="PartialViewKhoa" model="Model" />
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer"></div>

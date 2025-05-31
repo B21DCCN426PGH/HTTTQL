@@ -1,0 +1,257 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\C#\\KTPM\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|d:\\c#\\ktpm\\thietbidientu_2\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|solutionrelative:thietbidientu_2\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|d:\\c#\\ktpm\\thietbidientu_2\\views\\cart\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|solutionrelative:thietbidientu_2\\views\\cart\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|d:\\c#\\ktpm\\thietbidientu_2\\views\\cart\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|solutionrelative:thietbidientu_2\\views\\cart\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|d:\\c#\\ktpm\\thietbidientu_2\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|solutionrelative:thietbidientu_2\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|d:\\c#\\ktpm\\thietbidientu_2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|solutionrelative:thietbidientu_2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|d:\\c#\\ktpm\\thietbidientu_2\\models\\tooldbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|solutionrelative:thietbidientu_2\\models\\tooldbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|d:\\c#\\ktpm\\thietbidientu_2\\migrations\\20240403033608_lydohuy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|solutionrelative:thietbidientu_2\\migrations\\20240403033608_lydohuy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|d:\\c#\\ktpm\\thietbidientu_2\\models\\phieumuon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|solutionrelative:thietbidientu_2\\models\\phieumuon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|d:\\c#\\ktpm\\thietbidientu_2\\controllers\\accesscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|solutionrelative:thietbidientu_2\\controllers\\accesscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|d:\\c#\\ktpm\\thietbidientu_2\\views\\access\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|solutionrelative:thietbidientu_2\\views\\access\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|d:\\c#\\ktpm\\thietbidientu_2\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E68B7D15-6F40-4CB4-890A-538176BC68BE}|ThietBiDienTu_2\\ThietBiDienTu_2.csproj|solutionrelative:thietbidientu_2\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CartController.cs",
+              "DocumentMoniker": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Controllers\\CartController.cs",
+              "RelativeDocumentMoniker": "ThietBiDienTu_2\\Controllers\\CartController.cs",
+              "ToolTip": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Controllers\\CartController.cs",
+              "RelativeToolTip": "ThietBiDienTu_2\\Controllers\\CartController.cs",
+              "ViewState": "AQIAAH8AAAAAAAAAAAAgwJUAAAAgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-03T04:26:49.173Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Views\\Cart\\Index.cshtml",
+              "RelativeDocumentMoniker": "ThietBiDienTu_2\\Views\\Cart\\Index.cshtml",
+              "ToolTip": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Views\\Cart\\Index.cshtml",
+              "RelativeToolTip": "ThietBiDienTu_2\\Views\\Cart\\Index.cshtml",
+              "ViewState": "AQIAAIMAAAAAAAAAAAAIwJ4AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-04-03T04:26:35.141Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Views\\Cart\\Details.cshtml",
+              "RelativeDocumentMoniker": "ThietBiDienTu_2\\Views\\Cart\\Details.cshtml",
+              "ToolTip": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Views\\Cart\\Details.cshtml",
+              "RelativeToolTip": "ThietBiDienTu_2\\Views\\Cart\\Details.cshtml",
+              "ViewState": "AQIAAGQAAAAAAAAAAAAIwH8AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-04-03T04:26:01.089Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Program.cs",
+              "RelativeDocumentMoniker": "ThietBiDienTu_2\\Program.cs",
+              "ToolTip": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Program.cs",
+              "RelativeToolTip": "ThietBiDienTu_2\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-03T04:14:49.958Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\C#\\KTPM\\ThietBiDienTu_2\\appsettings.json",
+              "RelativeDocumentMoniker": "ThietBiDienTu_2\\appsettings.json",
+              "ToolTip": "D:\\C#\\KTPM\\ThietBiDienTu_2\\appsettings.json",
+              "RelativeToolTip": "ThietBiDienTu_2\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAABaAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-04-03T04:10:18.574Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "20240403033608_lydohuy.cs",
+              "DocumentMoniker": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Migrations\\20240403033608_lydohuy.cs",
+              "RelativeDocumentMoniker": "ThietBiDienTu_2\\Migrations\\20240403033608_lydohuy.cs",
+              "ToolTip": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Migrations\\20240403033608_lydohuy.cs",
+              "RelativeToolTip": "ThietBiDienTu_2\\Migrations\\20240403033608_lydohuy.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-03T04:09:20.203Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ToolDbContext.cs",
+              "DocumentMoniker": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Models\\ToolDbContext.cs",
+              "RelativeDocumentMoniker": "ThietBiDienTu_2\\Models\\ToolDbContext.cs",
+              "ToolTip": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Models\\ToolDbContext.cs",
+              "RelativeToolTip": "ThietBiDienTu_2\\Models\\ToolDbContext.cs",
+              "ViewState": "AQIAACAAAAAAAAAAAAAUwCsAAABgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-03T04:09:20.242Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Phieumuon.cs",
+              "DocumentMoniker": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Models\\Phieumuon.cs",
+              "RelativeDocumentMoniker": "ThietBiDienTu_2\\Models\\Phieumuon.cs",
+              "ToolTip": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Models\\Phieumuon.cs",
+              "RelativeToolTip": "ThietBiDienTu_2\\Models\\Phieumuon.cs",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAAABcAAAAoAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-03T04:09:20.247Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "ThietBiDienTu_2\\Controllers\\HomeController.cs",
+              "ToolTip": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "ThietBiDienTu_2\\Controllers\\HomeController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-03T04:09:20.253Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Views\\Access\\Login.cshtml",
+              "RelativeDocumentMoniker": "ThietBiDienTu_2\\Views\\Access\\Login.cshtml",
+              "ToolTip": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Views\\Access\\Login.cshtml",
+              "RelativeToolTip": "ThietBiDienTu_2\\Views\\Access\\Login.cshtml",
+              "ViewState": "AQIAADMAAAAAAAAAAAAAAEQAAAAgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-04-03T04:09:20.259Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AccessController.cs",
+              "DocumentMoniker": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Controllers\\AccessController.cs",
+              "RelativeDocumentMoniker": "ThietBiDienTu_2\\Controllers\\AccessController.cs",
+              "ToolTip": "D:\\C#\\KTPM\\ThietBiDienTu_2\\Controllers\\AccessController.cs",
+              "RelativeToolTip": "ThietBiDienTu_2\\Controllers\\AccessController.cs",
+              "ViewState": "AQIAACQAAAAAAAAAAAAAADQAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-03T04:09:20.264Z"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 102,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{007a3a6b-b5b2-454d-a2bd-cf929f989be2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 280,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

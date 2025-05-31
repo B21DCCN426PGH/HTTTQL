@@ -1,0 +1,20 @@
+﻿@model int;
+
+@if (Model == 0)
+{
+    <div class="custom-div warning" style="cursor: default">
+        <svg class="icon icon-lg">
+            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-history")"></use>
+        </svg>
+        <span class="ml-1"> Đang sửa</span>
+    </div>
+}
+else if (Model == 1)
+{
+    <div class="custom-div info" style="cursor: default">
+        <svg class="icon icon-lg">
+            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-calendar-check")"></use>
+        </svg>
+        <span class="ml-1"> Đã sửa</span>
+    </div>
+}

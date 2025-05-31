@@ -1,0 +1,83 @@
+﻿@model ThietBiDienTu_2.Models.Dongthietbi
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2 class="text-center mt-4 mb-4">CHI TIẾT THIẾT BỊ</h2>
+
+
+<hr />
+@section naviheader{
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Index", "DongThietBi", new { area = "Admin" })">Dòng thiết bị</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Chi tiết dòng thiết bị</li>>
+            </ol>
+        </nav>
+    </div>
+}
+<div class="card">
+    <div class="card-header">
+        <h3>Chi tiết thiết bị</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <!-- Left Column for Image -->
+            <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
+                <img src="~/images/@Model.Hinhanh" id="imgProduct" class="img-fluid" alt="Product Image"
+                     style="border:solid 2px #ccc; max-height:308px;max-width:308px; border-radius:4px;">
+                @* <div style="width:308px">
+                <input asp-for="Hinhanh" class="form-control" type="file" id="imgInput" onchange="previewImage(event)" />
+                </div> *@
+            </div>
+
+            <!-- Right Column for Form -->
+            <div class="col-md-6">
+                <div class="bs-stepper linear">
+                    <div class="bs-stepper-content">
+                        <!-- your steps content here -->
+                        <dt class="col-sm-3">Tên dòng thiết bị</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Tendongtb)</dd>
+
+                        <dt class="col-sm-3">Số lượng</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Soluong)</dd>
+
+                        <dt class="col-sm-3">Mô tả</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Mota)</dd>
+
+                        <div class="form-group mt-3">
+                            <a asp-action="Index" class="btn btn-secondary">Trở lại</a>
+                            <a class="btn btn-primary" asp-controller="DongThietBi" asp-action="Edit" asp-route-id="@Model.Madongtb">Chỉnh sửa</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["Đã thêm thành công"]
+    </div>
+}
+<script>
+    function previewImage(event) {
+        var input = event.target;
+        var reader = new FileReader();
+        reader.onload = function () {
+            var imgElement = document.getElementById("imgProduct");
+            imgElement.src = reader.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    };
+</script>
+

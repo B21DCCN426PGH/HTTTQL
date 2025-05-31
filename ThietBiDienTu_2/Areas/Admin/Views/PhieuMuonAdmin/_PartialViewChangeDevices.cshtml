@@ -1,0 +1,217 @@
+﻿@model X.PagedList.IPagedList<Thietbi>
+
+<script>
+    $(document).ready(function () {
+        var alertSuccess = '@ViewBag.Alert';
+        if(alertSuccess != ""){
+            setTimeout(function () {
+                alert("Đổi thiết bị thành công");
+            }, 300);
+        }
+        var madongtb = '@ViewBag.Madongtb';
+        var matbOldView = '@ViewBag.MatbOld';
+        var mapmView = '@ViewBag.Mapm';
+        var selectKhoView = '@ViewBag.selectKhoView';
+        var searchStringView = '@ViewBag.searchStringView';
+        var pageView = null;
+        $('#btnSearch').click(function () {
+            searchStringView = $('#searchString').val();
+            getFilterDevices();
+        });
+
+        $('#selectKho').val(selectKhoView);
+        $('#searchString').val(searchStringView);
+
+        $('#searchString').change(function () {
+            searchStringView = $(this).val();
+            getFilterDevices();
+        });
+
+        $('.page-link').click(function () {
+            pageView = $(this).attr('value');
+            getFilterDevices();
+        });
+
+        $('#selectKho').change(function () {
+            selectKhoView = $(this).val();
+            getFilterDevices();
+        });
+
+        $('.ChangeDevicesClickPopUp').click(function () {
+            var matbNewView = $(this).attr('value');
+            console.log("Change devices post success out ajax");
+            closeModalPopup();
+            $.ajax({
+                url: '/admin/PhieuMuonAdmin/ChangeDevicesDecided',
+                type: 'Get',
+                data: {
+                    matbOld: matbOldView,
+                    matbNew: matbNewView,
+                    mapm: mapmView
+                },
+                success: function (response) {
+                    $('#ctpmListPartial').html(response);
+                    $('#collapse\\(' + madongtb + '\\)').addClass('show');
+                    $('#button\\('+madongtb+'\\)').removeClass('collapsed')
+                },
+            });
+        });
+
+        function getFilterDevices() {
+            $.ajax({
+                url: '/admin/PhieuMuonAdmin/ChangeDevices',
+                type:'Get',
+                data: {
+                    page: pageView,
+                    searchString: searchStringView,
+                    makho: selectKhoView,
+                    matb: matbOldView,
+                    mapm : mapmView
+                },
+                success: function (response) {
+                    $('#ChangeDeviceFilter').html(response);
+                    openModalPopup();
+                }
+            });
+        }
+
+        $('.CloseModalPopup').click(function () {
+            closeModalPopup();
+        });
+
+        function openModalPopup() {
+            $('#changeDevice').addClass('show');
+            $('#changeDevice').removeAttr('aria-hidden');
+            $('#changeDevice').attr('aria-modal', 'true');
+            $('#changeDevice').css({
+                'display': 'block',
+                'padding-right': '17px'
+            });
+        }
+
+        function closeModalPopup() {
+            $('#changeDevice').removeClass('show');
+            $('#changeDevice').attr('aria-hidden', 'true');
+            $('#changeDevice').removeAttr('aria-modal');
+            $('#changeDevice').css({
+                'display': 'none',
+                'padding-right': ''
+            });
+            $('.modal-backdrop').remove();
+            console.log("Get to close modal popup");
+            $('body').removeClass('modal-open');
+            $('body').css({
+                'padding-right': ''
+            });
+
+
+        }
+    });
+    
+</script>
+<div id="ChangeDeviceFilter">
+<!-- Modal -->
+<div class="modal fade" id="changeDevice" tabindex="-1" role="dialog" 
+aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width:60%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Danh sách thiết bị trong kho</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="CloseModalPopup">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div style="width:100%" class="d-none d-md-flex align-items-center mb-2">
+                    <div class="input-group" style="width:50%">
+                        <!-- Search bar -->
+                        <input name="searchString" id="searchString" type="search" placeholder="Tìm seri thiết bị..." class="form-control rounded" aria-label="Search">
+                        <a class="btn btn-info rounded mr-2" id="btnSearch">
+                            <svg class="icon icon-lg">
+                                <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-search")"></use>
+                            </svg>
+                        </a>
+                    </div>
+                    <select class="form-control" id="selectKho" style="width:30%">
+                        <option value="">Chọn kho</option>
+                        @if (ViewBag.selectKhoList != null)
+                        {
+                            foreach (SelectListItem phongselect in ViewBag.selectKhoList)
+                            {
+                                <option value="@phongselect.Value">@phongselect.Text</option>
+                            }
+                        }
+                    </select>
+
+                </div>
+                <table class="table table-striped text-center">
+                    <thead>
+                        <tr class="text-center">
+                            <th>STT</th>
+                            <th>Ảnh</th>
+                            <th>Seri</th>
+                            <th>Kho</th>
+                            <th>Đổi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int index = (Model.PageNumber - 1) * Model.PageSize;
+                        }
+                        @foreach(Thietbi tb in Model)
+                        {
+                            <tr>
+                                <td>@(++index)</td>
+                                <td>
+                                    <img src="~/images/@tb.MadongtbNavigation.Hinhanh" class="card-image-top"
+                                    style="width:60px;height:60px"/>
+                                </td>
+                                <td>@tb.Seri</td>
+                                <td>@tb.Map - @tb.MapNavigation.Tenphong</td>
+                                <td>
+                                    <a value="@tb.Matb" class="btn btn-info btn-sm rounded ChangeDevicesClickPopUp">
+                                        <svg class="icon icon-lg">
+                                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-sync")"></use>
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <!-- First Page -->
+                        @if (Model.PageNumber > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" value="1">Đầu</a>
+                            </li>
+                        }
+
+                        <!-- Page Numbers -->
+                        @for (var i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, Model.PageCount); i++)
+                        {
+                            <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                                <a class="page-link" value="@i">@i</a>
+                            </li>
+                        }
+
+                        <!-- Last Page -->
+                        @if (Model.PageNumber < Model.PageCount)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" value="@Model.PageCount">Cuối</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary CloseModalPopup" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

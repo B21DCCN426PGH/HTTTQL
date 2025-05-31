@@ -1,0 +1,123 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model ThietBiDienTu_2.Models.ViewModels.HomeViewModel
+@section searchArea {
+    <div id="searchForm" style="width:40%" class="d-none d-md-flex">
+        <div class="input-group">
+            <!-- Search bar -->
+            <input value="@ViewBag.searchString" style="width:30%" name="searchString" id="searchString" type="search" placeholder="Tìm tên dòng thiết bị..." class="form-control rounded" aria-label="Search">
+            <button class="btn btn-info rounded" type="submit" id="searchBtn">
+                <svg class="icon icon-lg">
+                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-search")"></use>
+                </svg>
+            </button>
+            <!-- Filter dropdown 1 -->
+        </div>
+
+    </div>
+}
+@section naviheader {
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Danh sách thiết bị</li>
+            </ol>
+        </nav>
+    </div>
+}
+
+<h2 class="text-center">DANH SÁCH THIẾT BỊ</h2>
+<!-- Section-->
+<form id="dateForm">
+    <h3>Ngày đặt thiết bị:</h3>
+    <input name="NgayDat" type="date" id="NgayDat" class="ml-2" min="2024-04-17" />
+</form>
+<div class="mt-2 alert alert-info" role="alert" style="display:none">
+    Vui lòng chọn ngày đặt!
+</div>
+<div class="py-5" id="productShow" style="display:none">
+    <partial name="_PartialShowProduct" model="@Model" />
+</div>
+
+<script>
+    $(document).ready(function () {
+        
+        var searchStringView = $('#searchString').val();
+        var ngaydatView = $('#NgayDat').val();
+        $('#searchString').change(function () {
+            searchStringView = $(this).val();
+            ngaydatView = $('#NgayDat').val();
+            getToController();
+        });
+
+        $('#searchBtn').click(function () {
+            searchStringView = $('#searchString').val();
+            ngaydatView = $('#NgayDat').val();
+            getToController();
+        });
+
+        $('#NgayDat').change(function () {
+            ngaydatView = $(this).val();
+            searchStringView = $('#searchString').val();
+            getToController();
+        });
+
+        function getToController() {
+            console.log("Get to ajax");
+            $.ajax({
+                url: '/ProcductManagement/Filter',
+                type: 'GET',
+                data: {
+                    searchString: searchStringView,
+                    NgayDat: ngaydatView,
+                    trangThai: null
+                },
+                success: function (response) {
+                    console.log("Get to ajax");
+                    $('#productShow').html(response);
+                    // if (ngaydatView) {
+                    //     $('#productShow').css('display', 'block');
+                    //     $('.alert').css('display', 'none');
+                    // } else {
+                    //     $('.alert').css('display', 'block');
+                    //     $('#productShow').css('display', 'none');
+                    // }
+                }
+            });
+        }
+
+        // Hàm để lấy ngày đặt đã lưu trong session (nếu có) và định dạng lại theo yyyy-MM-dd
+        function GetSavedNgayDat() {
+            var savedNgayDat = '@(HttpContextAccessor.HttpContext.Session.GetString("NgayDat") ?? "")';
+            if (savedNgayDat) {
+                // Định dạng lại ngày thành yyyy-MM-dd
+                var parts = savedNgayDat.split('-');
+                if (parts.length === 3) {
+                    var formattedDate = parts[2] + '-' + parts[1] + '-' + parts[0];
+                    return formattedDate;
+                }
+            }
+            return '';
+        }
+
+        // Kiểm tra nếu đã có ngày đặt trong session để hiển thị danh sách thiết bị
+        var savedNgayDat = GetSavedNgayDat();
+        $('#NgayDat').val(savedNgayDat);
+        if (savedNgayDat) {
+            $('#productShow').css('display', 'block');
+            $('.alert').css('display', 'none');
+        } else {
+            $('.alert').css('display', 'block');
+            $('#productShow').css('display', 'none');
+        }
+        $('#NgayDat').attr({
+            'min': TodayMade
+        });
+
+    });
+</script>

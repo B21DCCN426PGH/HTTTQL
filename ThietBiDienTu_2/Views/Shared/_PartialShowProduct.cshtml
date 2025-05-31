@@ -1,0 +1,138 @@
+﻿@model ThietBiDienTu_2.Models.ViewModels.HomeViewModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@using System.Web
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    if ($('#NgayDat').val() == null || $('#NgayDat').val() == "") {
+        $('.alert').css('display', 'block');
+                        $('#productShow').css('display', 'none');
+                        $('#xemthem').css('display', 'none');
+    }
+    else { 
+        $('#productShow').css('display', 'block');
+                        $('.alert').css('display', 'none');
+        console.log("Amount " + '@Model.DongThietBiList.Count()');
+    }
+
+    $(document).ready(function () {
+        var alertViewModel = '@ViewBag.FailAdd';
+        if(alertViewModel !=""){
+            alert("Thiết bị không đủ số lượng");
+        }
+
+         var alertSuccess = '@HttpUtility.HtmlEncode(ViewBag.Notification)';
+        if(alertSuccess !== ""){
+            alert("Thiết bị đã được thêm vào phiếu mượn");
+        }
+        var xemthemView = '@ViewBag.XemThem';
+        if(xemthemView == ""){
+            $('#xemthem').css('display', 'block');
+        }
+        $('#XemThemClick').click(function () {
+            var searchStringView = $('#searchString').val();
+            var ngaydatView = $('#NgayDat').val();
+            $.ajax({
+                url: '/ProcductManagement/Filter',
+                type:'GET',
+                data:{
+                    searchString : searchStringView,
+                    NgayDat : ngaydatView,
+                    trangThai : "Sẵn sàng"
+                },
+                success: function (response) {
+                    $('#productShow').html(response);
+                }
+            });
+        });
+
+        $('a.btn-outline-dark').click(function (e) {
+            e.preventDefault(); // Ngăn chặn hành động mặc định của liên kết
+             var url = "/Cart/Add"; // Lấy URL của liên kết
+             var madongtbView = $(this).attr('value');
+             var searchStringView = $('#searchString').val();
+             console.log("madong tb: "+madongtbView);
+            // Gửi yêu cầu Ajax
+           $.ajax({
+                type: 'GET',
+                 url: url,
+                 data:{
+                     id : madongtbView,
+                     searchString : searchStringView,
+                     trangThai : xemthemView == ""? "":"Sẵn sàng"
+                 },
+                success: function (data) {
+                    console.log("Get in success");
+                    // Cập nhật phần hiển thị sản phẩm sau khi thực hiện yêu cầu Ajax
+                    $('#productShow').html(data);
+                    //$('#productShow').show(); // Hiển thị phần sản phẩm sau khi load thành công
+                },
+                 error: function (xhr, status, error) {
+                // Log error details to console
+                console.log('AJAX Error:', xhr.responseText);
+
+                // Optionally, you can display an alert with more specific error details
+                var errorMessage = 'Đã xảy ra lỗi khi thực hiện yêu cầu.';
+                if (xhr.status === 404) {
+                    errorMessage = 'Không tìm thấy trang yêu cầu.';
+                } else if (xhr.status === 500) {
+                    errorMessage = 'Lỗi máy chủ nội bộ.';
+                }
+                alert(errorMessage);
+            }
+            });
+        });
+    });
+</script>
+<div class="container px-4 px-lg-5 mt-5">
+
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            @{
+                int counter = 0;
+                foreach (var item in Model.DongThietBiList)
+                {
+                                                        @if (item.Soluong <= 0)
+                    {
+                        continue;
+                    }
+                                                        <div class="col mb-5">
+                                                            <div class="card h-100">
+                                                                <!-- Product image-->
+                                                                <img class="card-img-top" src="~/images/@item.Hinhanh" alt="@item.Tendongtb" />
+                                                                <!-- Product details-->
+                                                                <div class="card-body p-4 product-details">
+                                                                    <div class="text-center">
+                                                                        <!-- Product name-->
+                                                                        <h5 class="fw-bolder">@item.Tendongtb</h5>
+                                                                        <p>@item.Mota</p>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- Product actions-->
+                                                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                                                    <div class="text-center">
+                                                                    
+                                                                    <!-- href="/Cart/Add/item.Madongtb"-->
+                                                                        <a class="btn btn-outline-dark mt-auto" value="@item.Madongtb">Thêm vào phiếu mượn</a>
+                                                                        <!--Chuc nang them san pham vao trong controller cart-->
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                    counter++;
+                    if (counter % 4 == 0)
+                    {
+                                                            @:</div><div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    }
+                }
+            }
+        </div>
+    </div>
+
+                                        
+    
+    <div class="text-center" id="xemthem" style="display:none">
+        <a id="XemThemClick" class="btn btn-primary see-more-btn">
+            Xem thêm
+        </a>
+    </div>
+

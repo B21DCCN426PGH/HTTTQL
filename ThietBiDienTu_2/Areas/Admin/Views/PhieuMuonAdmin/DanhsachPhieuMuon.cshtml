@@ -1,0 +1,128 @@
+﻿@using ThietBiDienTu_2.Areas.Admin.ViewModels;
+@using ThietBiDienTu_2.Models;
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+@{
+    ViewData["Title"] = "Phieu muon list";
+   
+}
+
+@model List<Phieumuon>
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            console.log("here");
+            $('#notify').css("display", "none");
+        }, 10000);
+    });
+</script>
+@section naviheader{
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Danh sách phiếu mượn</li>
+            </ol>
+        </nav>
+    </div>
+}
+@if (TempData["Duyet"] != null)
+{
+    <div class="alert alert-success" id="notify">
+        <strong>Thành công!</strong> @TempData["Duyet"]
+    </div>
+}
+<script>
+    $(document).ready(function () {
+        var indexPartial = '@ViewBag.indexPartial';
+        if (indexPartial != "") {
+
+            $('#btnToday').removeClass('collapsed');
+            $('#btnAll').addClass('collapsed');
+
+            $('#collapseOne').addClass('show');
+            $('#collapseTwo').removeClass('show');
+
+
+        }
+    });
+</script>
+<!-- Content Header (Page header) -->
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col">
+                <h3 class="card-title">Danh sách phiếu mượn</h3>
+            </div>
+            <div class="col-auto">
+                <div class="card-tools">
+                    <a asp-action="CreatePm" class="btn btn-primary btn-sm">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-plus")"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body ">
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button id="btnToday" class="accordion-button collapsed" type="button" data-coreui-toggle="collapse" data-coreui-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        <strong style="font-size:18px">Hôm nay</strong>
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" data-coreui-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <partial name="_PartialTableToday" model="Model.Where(x=>x.Ngaymuon == DateTime.Now.Date).ToPagedList(1,5)" />
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button id="btnAll" class="accordion-button" type="button" data-coreui-toggle="collapse" data-coreui-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <strong style="font-size:18px">Tất cả</strong>
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse show" data-coreui-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <partial name="_PartialTableAnother" model="Model.ToPagedList(1,5)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+</div>
+
+
+<div class="footer"></div>
+
+
+@* <div class="accordion-item">
+    <h2 class="accordion-header" i>
+        <button class="accordion-button collapsed" type="button" data-coreui-toggle="collapse" data-coreui-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+            <strong style="font-size:18px">Đã duyệt / Đã trả</strong>
+        </button>
+    </h2>
+    <div id="collapseFour" class="accordion-collapse collapse" data-coreui-parent="#accordionExample">
+        <div class="accordion-body">
+            <partial name="_PartialTableHasChecked" model="Model.Where(x=>x.Ngaymuon != DateTime.Now.Date && (x.Trangthai==1 ||x.Trangthai==3)).ToPagedList()" />
+        </div>
+    </div>
+</div>
+<div class="accordion-item">
+    <h2 class="accordion-header" i>
+        <button class="accordion-button collapsed" type="button" data-coreui-toggle="collapse" data-coreui-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+            <strong style="font-size:18px">Từ chối / Hủy / Không đến mượn</strong>
+        </button>
+    </h2>
+    <div id="collapseFive" class="accordion-collapse collapse" data-coreui-parent="#accordionExample">
+        <div class="accordion-body">
+            <partial name="_PartialTableRefuse" model="Model.Where(x=>x.Ngaymuon != DateTime.Now.Date && x.Trangthai>=4 && x.Trangthai <=6).ToPagedList()" />
+        </div>
+    </div>
+</div> *@

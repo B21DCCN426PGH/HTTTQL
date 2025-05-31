@@ -1,0 +1,44 @@
+﻿@using ThietBiDienTu_2.Areas.Admin.ViewModels
+@model CreatePmViewModel
+
+<div class="row">
+    <div class="col-md-6">
+        @if (ViewBag.NotFindsv  != null)
+        {
+            <span class="text-danger">Không tìm thấy sinh viên</span>
+        }
+        <div class="form-group mb-2">
+            <label class="mb-2" asp-for="Tensv"><strong>Tên sinh viên: </strong></label>
+            <input class="form-control" asp-for="Tensv" value="@Model.Tensv" readonly style="background-color:#E8E8E8" />
+        </div>
+    </div>
+    <div class="col-md-6">
+        @if (ViewBag.NgaymuonValid != null)
+        {
+            <span class="text-danger">Vui lòng chọn ngày mượn</span>
+        }
+        <div class="form-group mb-2">
+            <label class="mb-2"><strong>Ngày lập phiếu mượn: </strong></label>
+            <input type="date" asp-for="NgayLap" class="form-control" readonly style="background-color:#E8E8E8" />
+
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group mb-2">
+            <label class="mb-2" asp-for="TenKhoa"><strong>Khóa: </strong></label>
+            <input class="form-control" asp-for="TenKhoa" value="@Model.TenKhoa" readonly style="background-color:#E8E8E8" />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group mb-2">
+            <label class="mb-2" asp-for="TenNganh"><strong>Ngành: </strong></label>
+            <input class="form-control" asp-for="TenNganh" value="@Model.TenNganh" readonly style="background-color:#E8E8E8" />
+        </div>
+    </div>
+</div>
+@if (ViewBag.LydomuonValid != null)
+{
+    <span class="text-danger">Vui lòng chọn lý do mượn</span>
+}

@@ -1,0 +1,164 @@
+﻿@using System.Web;
+@using ThietBiDienTu_2.Areas.Admin.ViewModels
+@model CreatePmViewModel
+@section naviheader{
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="/Admin/PhieuMuonAdmin/DanhsachPhieuMuon">Danh sách phiếu mượn</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Tạo phiếu mượn</li>
+            </ol>
+        </nav>
+    </div>
+}
+<script>
+    $(document).ready(function () {
+        var masvView = '@(ViewBag.MasvView == 0 ? null : ViewBag.MasvView)';
+        var NgaymuonView = null;
+        var LydomuonView = '@Html.Raw(HttpUtility.HtmlEncode(ViewBag.LydomuonView))';
+        console.log("Lydo muon view: " + LydomuonView);
+        var ajaxCall = 0;
+        $('#masvInput').val(masvView);
+        $('#LydoMuonInput').val(LydomuonView);
+
+        $('#ngayMuonInput').attr({
+            'min': TodayMade
+        });
+        $('#masvInput').change(function () {
+            masvView = $(this).val();
+            console.log("In here masv: " + masvView);
+            ajaxCall = 1;
+            getToControllerCreate();
+        });
+
+        $('#ngayMuonInput').change(function () {
+            NgaymuonView = $(this).val();
+            console.log("In here ngay muon: " + NgaymuonView);
+            ajaxCall = 2;
+            getToControllerCreate();
+        });
+
+        $('#LydoMuonInput').change(function () {
+            LydomuonView = $(this).val();
+        });
+
+        $('.createPmButton').click(function () {
+            getToControllerCreate();
+        });
+        function getToControllerCreate(){
+            $.ajax({
+                url:'/admin/PhieuMuonAdmin/CreatePm',
+                type: 'Get',
+                data: {
+                    masv: masvView,
+                    Ngaymuon: NgaymuonView,
+                    Lydomuon: LydomuonView,
+                    ajaxCall : ajaxCall,
+                    checkInBorrow : true
+                },
+                success: function(response){
+                    if (ajaxCall == 1) {
+                        $('#partialCreate').html(response);
+                    }
+                    else if (ajaxCall == 2) {
+                        $('#_PartialViewChooseDevices').html(response);
+                    }
+                    
+                }
+            });
+        }
+
+        
+        
+    });
+</script>
+<form asp-controller="PhieuMuonAdmin" asp-action="CreatePm" method="post">
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col">
+                <div class="d-flex align-items-center">
+                    <h3 class="card-title mb-0 mr-3">Tạo phiếu mượn</h3>
+ 
+                </div>
+            </div>
+            <div class="col-auto text-center">
+                <div class="card-tools">
+                    <button class="btn btn-primary btn-sm" type="submit">
+                        Tạo phiếu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <h3 class="text-center">Thông tin phiếu mượn</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group mb-2">
+                    <label class="mb-2"><strong>Mã sinh viên: </strong></label>
+                    <input class="form-control" text="text" id="masvInput" name="masv"/>
+                    
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group mb-2">
+                    <label class="mb-2"><strong>Ngày mượn: </strong></label>
+                        <input type="date" class="form-control" id="ngayMuonInput" name="Ngaymuon" />
+                </div>
+            </div>
+        </div>
+        <div id="partialCreate">
+            <partial name="_PartialViewCreatePm" model="Model" />
+        </div>
+        <div class="form-group mb-2">
+            <label class="mb-2"><strong>Lý do mượn:</strong></label>
+                <select class="form-control" type="text" id="LydoMuonInput" name="Lydomuon">
+            <option value="">Chọn lý do mượn</option>
+            <option value="Tổ chức sự kiện clb">Tổ chức sự kiện clb</option>
+            <option value="Tổ chức sự kiện của trường">Tổ chức sự kiện của trường</option>
+            <option value="Học nhóm">Học nhóm</option>
+            <option value="Khác">Khác</option>
+            </select>
+            
+        </div>
+
+        <h3 class="text-center mt-3"> Danh sách thiết bị mượn</h3>
+        <div id="_PartialViewChooseDevices">
+                @if (ViewBag.BorrowCartValid != null)
+                {
+                    <span class="text-danger">Vui lòng chọn dòng thiết bị muốn mượn</span>
+                }
+                <partial name="_PartialViewChooseDevices" model="Model.pagedongtb" />
+        </div>
+        
+
+
+        <div class="row">
+            <div class="col-md-6">
+
+                <a asp-action="DanhsachPhieuMuon" asp-controller="PhieuMuonAdmin" class="btn btn-secondary btn-sm">Quay lại</a>
+
+            </div>
+            <div class="col-md-6">
+
+                <div class="card-tools float-right">
+                    <button class="btn btn-primary btn-sm" type="submit">
+                        Tạo phiếu
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</form>
+<div class="footer"></div>
+<style>
+    .thumbnail-image {
+        max-width: 60px; /* Adjust the maximum width as needed */
+        max-height: 60px; /* Adjust the maximum height as needed */
+    }
+</style>

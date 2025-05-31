@@ -1,0 +1,108 @@
+﻿@model X.PagedList.IPagedList<Dongthietbi>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Thêm thiết bị
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width:60%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Danh sách dòng thiết bị</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                    <div style="width:100%" class="d-none d-md-flex align-items-center mb-2">
+                        <div class="input-group" style="width:50%">
+                            <!-- Search bar -->
+                            <input name="searchString" id="searchString_2" type="search" placeholder="Tìm tên dòng thiết bị..." class="form-control rounded" aria-label="Search">
+                            <button class="btn btn-info rounded mr-2" type="submit" id="btnSearch_2">
+                                <svg class="icon icon-lg">
+                                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-search")"></use>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="form-group mb-0 ml-2" style="width:20%">
+                            <label class="mb-1"><strong>Ngày mượn</strong></label>
+                            <input type="date" class="form-control" id="BorrowTo" min="2024-03-01" />
+                        </div>
+
+                    </div>
+                <table class="table table-striped text-center">
+                    <thead>
+                        <tr class="text-center">
+                            <th>STT</th>
+                            <th>Ảnh</th>
+                            <th>Tên Thiết bị</th>
+                            <th>Sẵn sàng</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int index = 0;
+                        }
+                        @foreach(Dongthietbi dongtb in Model)
+                        {
+                            if (dongtb.Thietbis.Count() == 0)
+                            {
+                                continue;
+                            }
+                            <tr>
+                                <td>@(++index)</td>
+                                <td> <img src="@Url.Content("~/images/" + dongtb.Hinhanh)" class="card-image-top thumbnail-image" /></td>
+                                <td>@dongtb.Tendongtb </td>
+                                <td>@dongtb.Thietbis.Count()</td>
+                                <td>
+                                    <a asp-route-madongtb="@dongtb.Madongtb" class="btn btn-primary btn-sm rounded">
+                                        <svg class="icon icon-lg">
+                                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-plus")"></use>
+                                        </svg>
+                                    </a>
+                                    
+                                </td>
+                            </tr>
+                        }
+                       
+                    </tbody>
+                </table>
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <!-- First Page -->
+                        @if (Model.PageNumber > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" value="1">Đầu</a>
+                            </li>
+                        }
+
+                        <!-- Page Numbers -->
+                        @for (var i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, Model.PageCount); i++)
+                        {
+                            <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                                <a class="page-link" value="@i">@i</a>
+                            </li>
+                        }
+
+                        <!-- Last Page -->
+                        @if (Model.PageNumber < Model.PageCount)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" value="@Model.PageCount">Cuối</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_PartialViewShowProductMuonCart" />

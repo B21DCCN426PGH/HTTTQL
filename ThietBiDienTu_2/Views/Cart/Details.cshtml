@@ -1,0 +1,188 @@
+﻿@using ThietBiDienTu_2.Models.ViewModels
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model CartItemViewModel
+@section naviheader {
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="/Cart">Phiếu mượn</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Chi tiết phiếu mượn</li>
+            </ol>
+        </nav>
+    </div>
+}
+<style>
+    .imgDetail {
+        max-height: 80px;
+        max-weight: 80px;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        var alertViewModel = '@TempData["Notifications"]';
+        if (alertViewModel != "") {
+            alert("Một số thiết bị đã được người khác đặt trước");
+        }
+    });
+    
+</script>
+@* <script>
+    $(document).ready(function () {
+        function GetSavedNgayDat() {
+            var savedNgayDat = '@(HttpContextAccessor.HttpContext.Session.GetString("NgayDat") ?? "")';
+            if (savedNgayDat) {
+                // Định dạng lại ngày thành yyyy-MM-dd
+                var parts = savedNgayDat.split('-');
+                if (parts.length === 3) {
+                    var formattedDate = parts[2] + '-' + parts[1] + '-' + parts[0];
+                    return formattedDate;
+                }
+            }
+            return '';
+        }
+        var ngaymuonInput = '@(HttpContextAccessor.HttpContext.Session.GetString("NgayDat") ?? "")';
+        $('#ngaymuonInput').val(ngaymuonInput);
+    });
+</script> *@
+<form asp-action="Details" asp-controller="Cart" method="post" enctype="multipart/form-data">
+    <div class="container ">
+        <div class="row d-flex justify-content-center my-4">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header py-3">
+                        <h5 class="mb-0">Chi tiết phiếu mượn</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Single item -->
+                        @if (Model.CartItems.Count > 0)
+                        {
+
+                            <div class="row">
+
+
+                                <div class="col-md-6" style="width:40%">
+                                    <div class="form-group mb-2">
+                                        <label class="mb-2" asp-for="@Model.Sv.Masv"><strong>Mã số sinh viên: </strong></label>
+                                        <input class="form-control" asp-for="@Model.Sv.Masv" value="@Model.Sv.Masv" readonly style="background-color:#E8E8E8" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6" style="width:60%">
+                                    <div class="form-group mb-2">
+                                        <label class="mb-2" asp-for="@Model.Sv.Tensv"><strong>Tên sinh viên: </strong></label>
+                                        <input class="form-control" asp-for="@Model.Sv.Tensv" value="@Model.Sv.Tensv" readonly style="background-color:#E8E8E8" />
+                                    </div>
+                                </div>
+                            </div>
+                            @* <div class="row">
+                        <div class="col-md-6" style="width:40%">
+                        <div class="form-group mb-2">
+                        <label class="mb-2" asp-for="@Model."><strong>Khóa: </strong></label>
+                        <input class="form-control" asp-for="@Model.TenKhoa" value="@Model.TenKhoa" readonly style="background-color:#E8E8E8" />
+                        </div>
+                        </div>
+                        <div class="col-md-6" style="width:60%">
+                        <div class="form-group mb-2">
+                        <label class="mb-2" asp-for="@Model.TenNganh"><strong>Ngành: </strong></label>
+                        <input class="form-control" asp-for="@Model.TenNganh" value="@Model.TenNganh" readonly style="background-color:#E8E8E8" />
+                        </div>
+                        </div>
+                        </div> *@
+                            <div class="row">
+                                <div class="col-md-6" style="width:40%">
+                                    <div class="infor-customer">
+                                        <label class="mb-2" asp-for="@Model.Phieumuon.Ngaymuon"><strong>Ngày mượn:</strong></label>
+
+                                        <input class="form-control" asp-for="@Model.Phieumuon.Ngaymuon" type="date" disabled style="background-color:#E8E8E8">
+                                    </div>
+                                </div>
+                                <div class="col-md-6" style="width:60%">
+                                    <div class="infor-customer">
+                                        <label class="mb-2" asp-for="@Model.Phieumuon.Ngaylap"><strong>Ngày lập:</strong></label>
+                                        <input class="form-control" asp-for="@Model.Phieumuon.Ngaylap" type="date" disabled style="background-color:#E8E8E8">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group mb-2">
+                                <label class="mb-2" asp-for="@Model.Phieumuon.Lydomuon"><strong>Lý do mượn:</strong></label>
+                                <input class="form-control" asp-for="@Model.Phieumuon.Lydomuon" type="text" />
+                                <span class="text-danger" asp-validation-for="@Model.Phieumuon.Lydomuon"></span>
+                            </div>
+
+                            <!-- Single item -->
+
+                            <hr class="my-4" />
+
+                        }
+
+                    </div>
+                </div>
+            </div>
+            @if (Model.CartItems.Count > 0)
+            {
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-header py-3">
+                            <h5 class="mb-0">Kiểm tra thông tin</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <ul class="list-group list-group-flush">
+                                        @foreach (var item in Model.CartItems)
+                                        {
+                                            <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
+                                                <img class="imgDetail" src="~/images/@item.Hinhanh"
+                                                     class="w-100" alt="@item.Tendongtb" />
+                                                <span><strong>@item.Tendongtb (@item.Soluong)</strong></span>
+
+                                                <a href="#!">
+                                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
+                                                </a>
+                                            </div>
+
+                                        }
+
+                                    </ul>
+
+                                </div>
+
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="pt-5">
+                        <h6 class="mb-0">
+                            <a href="@Url.Action("Index", "Cart")" class="text-body btn btn-danger" style="text-decoration: none;">
+                                <i class="fas fa-long-arrow-alt-left me-2"></i>Quay lại
+                            </a>
+                        </h6>
+                    </div>
+                </div>
+                <div class="col-md-6">
+
+                    <div class="pt-5 text-end">
+                        <button type="submit" class="btn btn-dark btn-lg" data-mdb-ripple-color="dark">
+                            Xác nhận
+                        </button>
+                    </div>
+                </div>
+                @* @if (TempData["ErrorMessage"] != null)
+                {
+                <div class="alert alert-danger" role="alert">
+                @TempData["ErrorMessage"]
+                </div>
+                } *@
+
+            </div>
+        </div>
+    </div>
+</form>

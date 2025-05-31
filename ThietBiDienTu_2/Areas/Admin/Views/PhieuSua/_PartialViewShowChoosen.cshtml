@@ -1,0 +1,129 @@
+﻿@using ThietBiDienTu_2.Areas.Admin.ViewModels
+@model CreatePSViewModel
+<div class="row">
+    <div class="col-md-6">
+
+        <partial name="_PartialViewAddFix" model="Model.tbList" />
+        <span class="text-danger">@ViewBag.Themtb</span>
+    </div>
+    <div class="col-md-6">
+        <h4 class="text-right">Tổng chi phí:  @Model.Tongchiphi.ToString("#,##0")đ</h4>
+        <span class="text-danger float-right">@ViewBag.AddChiphi</span>
+    </div>
+</div>
+<table class="table table-striped">
+    <thead class="text-center">
+        <tr>
+            <th>STT</th>
+            <th>Ảnh</th>
+            <th>Tên thiết bị</th>
+            <th>Seri</th>
+            <th>Kho</th>
+            <th>Chi phí</th>
+            <th>Thao tác</th>
+        </tr>
+
+    </thead>
+    <tbody class="text-center">
+        @{
+            int index = (Model.tbChoosen.PageNumber - 1) * Model.tbChoosen.PageSize;
+        }
+        @foreach (TbFixAndCheck tbFix in Model.tbChoosen)
+        {
+            <tr>
+                <td>@(++index)</td>
+                <td>
+                    <img src="@Url.Content("~/images/" + tbFix.Hinhanh)" class="card-image-top thumbnail-image" />
+                </td>
+                <td>
+                    @tbFix.Tentb
+                </td>
+                <td>@tbFix.Seri</td>
+                <td>@tbFix.Makho - @tbFix.TenKho</td>
+                <td>
+                        @if (tbFix.Chiphi != 0)
+                        {
+                            <div class="custom-div success" style="cursor: default">
+                            <svg class="icon icon-lg">
+                                <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-money")"></use>
+                            </svg>
+                            <span class="ml-1"> @(tbFix.Chiphi.ToString("#,##0" + "đ"))</span>
+                            </div>
+                        }
+                       
+                </td>
+                <td>
+                    <partial name="UpdateInfoCreate" model="tbFix" />
+                    <a class="btn btn-danger btn-sm deleteButtonFixCart" value="@tbFix.Matb">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-trash")"></use>
+                        </svg>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<nav>
+    <ul class="pagination justify-content-center">
+        <!-- First Page -->
+        @if (Model.tbChoosen.PageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link page_choosen" value="1">Đầu</a>
+            </li>
+        }
+
+        <!-- Page Numbers -->
+        @for (var i = Math.Max(1, Model.tbChoosen.PageNumber - 2); i <= Math.Min(Model.tbChoosen.PageNumber + 2, Model.tbChoosen.PageCount); i++)
+        {
+            <li class="page-item @(Model.tbChoosen.PageNumber == i ? "active" : "")">
+                <a class="page-link page_choosen" value="@i">@i</a>
+            </li>
+        }
+
+        <!-- Last Page -->
+        @if (Model.tbChoosen.PageNumber < Model.tbChoosen.PageCount)
+        {
+            <li class="page-item">
+                <a class="page-link page_choosen" value="@Model.tbChoosen.PageCount">Cuối</a>
+            </li>
+        }
+    </ul>
+</nav>
+<script>
+    $(document).ready(function () {
+        var pageChoosenView = '@ViewBag.Pagechoosen';
+        $('.page_choosen').click(function () {
+            pageChoosenView = $(this).attr('value');
+            $.ajax({
+                url: '/admin/Phieusua/pageChoosenFilter',
+                type: 'Get',
+                data: {
+                    pageChoosen: pageChoosenView
+                },
+                success: function (response) {
+                    $('#showChoosen').html(response);
+                }
+            });
+        });
+
+        $('.deleteButtonFixCart').click(function () {
+            var matbView = $(this).attr('value');
+            console.log("Get to event delete");
+            $.ajax({
+               
+                url: '/admin/Phieusua/DeleteFromFixCart',
+                type: 'Get',
+                data: {
+                    matb: matbView,
+                    pageChoosen: pageChoosenView,
+                },
+                success: function (response) {
+                    console.log("Get to ajax");
+                    $('#showChoosen').html(response);
+                }
+            });
+        });
+    });
+</script>

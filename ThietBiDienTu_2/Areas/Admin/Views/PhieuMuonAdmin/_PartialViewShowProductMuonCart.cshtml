@@ -1,0 +1,106 @@
+﻿@using ThietBiDienTu_2.Areas.Admin.ViewModels;
+@using ThietBiDienTu_2.Repository;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<script>
+    var alertAdd = '@ViewBag.LimitQuantityAdd';
+    if (alertAdd != null && alertAdd !="") {
+        alert("Thiết bị bạn muốn tăng đã đạt giới hạn");
+    }
+    $(document).ready(function () {
+        $('.minusCart').click(function () {
+            $.ajax({
+                url: '/admin/PhieuMuonAdmin/MinusQuantity',
+                type: 'Get',
+                data: {
+                    madongtb: $(this).attr('value')
+                },
+                success: function (response) {
+                    $('#contentChooseDevices').html(response);
+                }
+            });
+        });
+
+        $('.plusCart').click(function () {
+            $.ajax({
+                url: '/admin/PhieuMuonAdmin/AddQuantity',
+                type: 'Get',
+                data: {
+                    madongtb: $(this).attr('value')
+                },
+                success: function (response) {
+                    $('#contentChooseDevices').html(response);
+                }
+            });
+        });
+
+        $('.deleteDongCart').click(function () {
+            $.ajax({
+                url: '/admin/PhieuMuonAdmin/DeleteQuantity',
+                type: 'Get',
+                data: {
+                    madongtb: $(this).attr('value')
+                },
+                success: function (response) {
+                    $('#contentChooseDevices').html(response);
+                }
+            });
+        });
+
+        
+
+    });
+</script>
+
+<table class="table table-striped text-center" >
+    <thead class="text-center">
+        <tr>
+            <th>STT</th>
+            <th>Ảnh</th>
+            <th>Tên Thiết bị</th>
+            <th>Số lượng mượn</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody class="text-center">
+        @{
+            int count = 0;
+            List<DongTbAndAmount> dongtbAmountList = HttpContextAccessor.HttpContext.Session.GetJson<List<DongTbAndAmount>>("BorrowCart") ?? new List<DongTbAndAmount>();
+        }
+        @foreach (var dongtbAmount in dongtbAmountList)
+        {
+            <tr>
+                <td>@(++count)</td>
+                <td><img src="@Url.Content("~/images/" + dongtbAmount.hinhanh)" class="card-image-top thumbnail-image" /></td>
+                <td>@dongtbAmount.tendongtb</td>
+                <td>
+                    <div style="align-items:center">
+                            <a  value="@dongtbAmount.madongtb" class="minusCart btn btn-light btn-sm mr-1">
+                            <svg class="icon icon-lg">
+                                <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-minus")"></use>
+                            </svg>
+                        </a>
+                        <input disabled type="text" maxlength="2" value="@dongtbAmount.amount" title="Quantity:" style="max-width:50px;text-align:center">
+                            <a  value="@dongtbAmount.madongtb" class="plusCart btn btn-light btn-sm ml-1">
+                            <svg class="icon icon-lg">
+                                <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-plus")"></use>
+                            </svg>
+                        </a>
+                    </div>
+                    
+                    
+                </td>
+                <td>
+                        <a  value="@dongtbAmount.madongtb" class="deleteDongCart btn btn-danger btn-sm rounded">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-trash")"></use>
+                        </svg>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+
+

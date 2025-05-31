@@ -1,0 +1,217 @@
+﻿@using System.Web;
+@using ThietBiDienTu_2.Areas.Admin.ViewModels;
+@using ThietBiDienTu_2.Models;
+@using Newtonsoft.Json;
+@{
+    ViewData["Title"] = "Create ThietBi";
+}
+
+@model ThietBiViewAdmin
+@section naviheader{
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Home</a></li>
+                <li class="breadcrumb-item"><a class="linktag" style="cursor:pointer" asp-action="ThietBiList" asp-controller="ThietBi">Thiết bị trong phòng</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Thêm thiết bị trong phòng</li>
+            </ol>
+        </nav>
+    </div>
+}
+<!-- Content Header (Page header) -->
+@{
+    if (ViewBag.FullAmount != null)
+    {
+    <div class="alert alert-danger" role="alert">
+                    @ViewBag.FullAmount;
+    </div>
+    }
+}
+
+
+
+<div class="card">
+    <div class="card-header">
+        <h3>Thêm thiết bị trong phòng</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <!-- Left Column for Image -->
+            <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
+                <img src="~/images/no_images.jpg" id="imgProduct" class="img-fluid" alt="Product Image"
+                     style="border:solid 2px #ccc; max-height:70%;max-width:80%; border-radius:4px;">
+                <div class="input-group mt-3" style="width:100%">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Ảnh thiết bị</span>
+                    <input readonly type="text" class="form-control" aria-label="Sizing example input" id="linkImage"
+                           aria-describedby="inputGroup-sizing-default">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <form method="post" id="createForm">
+                    <input asp-for="@Model.DongThietBi" value="123" hidden />
+                    <input asp-for="@Model.Phong" value="123" hidden />
+                    <input asp-for="@Model.CoSo" value="123" hidden />
+                    <input asp-for="@Model.HinhAnh" value="123" hidden />
+                    <!-- your steps content here -->
+                   
+                        <div class="form-group mb-2">
+                            <label asp-for="@Model.MaDongTb" class="mb-2"><strong>Tên dòng thiết bị<span class="text-danger"> *</span></strong></label>
+                        <select asp-for="@Model.MaDongTb" id="tbSelect" class="form-control" >
+                                <option value="">Chọn tên dòng thiết bị</option>
+                                @foreach (SelectListItem items in ViewBag.DongTbList)
+                                {
+                                    <option value="@items.Value">@items.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="@Model.MaDongTb" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label asp-for="@Model.Seri" class="mb-2"><strong>Seri thiết bị<span class="text-danger"> *</span></strong></label>
+                            <input asp-for="@Model.Seri" class="form-control" id="SeriInput" />
+                            <span asp-validation-for="@Model.Seri" class="text-danger"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6" style="width:40%">
+                                <div class="form-group mb-2">
+                                    <label asp-for="@Model.MaCoSo" class="mb-2"><strong>Cơ sở<span class="text-danger"> *</span></strong></label>
+                                    <select asp-for="@Model.MaCoSo" id="branchSelect" class="form-control">
+                                        <option value="all">Chọn Cơ sở</option>
+                                        @foreach (SelectListItem items in ViewBag.CoSoList)
+                                        {
+                                            <option value="@items.Value">@items.Text</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="@Model.MaCoSo" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6" style="width:60%">
+                                <div class="form-group mb-2">
+                                    <label asp-for="@Model.MaP" class="mb-2"><strong>Phòng<span class="text-danger"> *</span></strong></label>
+                                    <select asp-for="@Model.MaP" id="roomSelect" class="form-control">
+                                        <option value="all">Chọn Phòng</option>
+                                        @foreach (SelectListItem items in ViewBag.PhongList)
+                                        {
+                                            <option value="@items.Value">@items.Text.Split(',')[0]</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="@Model.MaP" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6" style="width:40%">
+                                <div class="form-group mb-2">
+                                    <label asp-for="@Model.TrangThai" class="mb-2"><strong>Trạng thái</strong></label>
+                                    <input asp-for="@Model.TrangThai" class="form-control" readonly id="StateProduct" style="background-color:#E8E8E8"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6" style="width:60%">
+                                <div class="form-group mb-2">
+                                    <label class="mb-2"><strong>Loại phòng</strong></label>
+                                    <input asp-for="@Model.LoaiPhong" class="form-control" id="roomType" readonly style="background-color:#E8E8E8" />
+                                </div>
+                            </div>
+                            
+                        </div>
+
+
+                        <div class="form-group mt-3">
+                            <button type="submit" class="btn btn-primary">Tạo mới</button>
+                            <a asp-action="ThietBiList" asp-controller="ThietBi" class="btn btn-danger">Quay lại</a>
+                        </div>
+                   
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer"></div>
+
+<script>
+   
+    function changeImage(){
+                     var MaDongTb = $('#tbSelect').val();
+                var imageProduct = document.getElementById('imgProduct');
+                var linkImage = document.getElementById('linkImage');
+                if(MaDongTb != ""){
+    @foreach (var items in ViewBag.DongTbFull)
+    {
+        <text>
+                                                              if (@items.Madongtb == MaDongTb) {
+                            imageProduct.src = "@Url.Content("~/images/"+@items.Hinhanh)";
+                            linkImage.value = "~/images/@items.Hinhanh";
+                        }
+        </text>
+    }
+                }
+                else{
+                    imageProduct.src = "@Url.Content("~/images/no_images.jpg")";
+                    linkImage.value = "~/images/no_images.jpg";
+                }
+            }
+        $(document).ready(function(){
+           
+            changeImage();
+        });
+        document.getElementById('tbSelect').addEventListener('change', function () {
+            changeImage();
+        });
+
+    document.getElementById('roomSelect').addEventListener('change', function () {
+        var RoomId = this.value;
+        var roomType = document.getElementById('roomType');
+        var stateProduct = document.getElementById('StateProduct');
+    @foreach (var items in ViewBag.PhongFull)
+    {
+        //'  ' mean if data not string it still convert to string
+        <text>
+                                if ('@items.Map' === RoomId) {
+                roomType.value = '@items.Loaiphong';
+                if ('@items.Loaiphong' === 'Kho') {
+                    stateProduct.value = "Sẵn sàng";
+                }
+                else {
+                    stateProduct.value = "Hoạt động";
+                }
+
+            }
+        </text>
+    }
+            if (RoomId == "all") {
+                roomType.value = "";
+                stateProduct.value = "";
+            }
+    });
+
+    document.getElementById('branchSelect').addEventListener('change', function () {
+        var branchId = this.value;
+        var roomSelect = document.getElementById('roomSelect');
+        var roomType = document.getElementById('roomType');
+        var stateProduct = document.getElementById('StateProduct');
+        //clear all option
+
+        while (roomSelect.options.length > 1) {
+            roomSelect.remove(1);
+        }
+
+        //C# is in server side, Javascript is in client side
+        //Show cannot use branch id in C# so using text
+    @foreach (SelectListItem items in ViewBag.PhongList)
+    {
+        <text>
+                                var roomBranchId = "@items.Text.Split(',')[1]";
+            if (branchId === "all" || roomBranchId === branchId) {
+                roomSelect.options.add(new Option("@items.Text.Split(',')[0]", "@items.Value", false));
+                //false mean not selected by default
+            }
+        </text>
+        //Switch razor syntax and generate js code dynamically for each room
+    }
+        if (roomSelect.value == "all") {
+            roomType.value = "";
+            stateProduct.value = "";
+        }
+    });
+
+</script>

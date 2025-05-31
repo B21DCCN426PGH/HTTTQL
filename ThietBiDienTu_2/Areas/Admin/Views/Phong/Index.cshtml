@@ -1,0 +1,141 @@
+﻿@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<Phong>
+
+<script>
+    $(document).ready(function () {
+        var searchStringAjax = null;
+        var filterLoaiphongAjax = null;
+        var filterCosoAjax = null;
+
+        $('#searchString').change(function () {
+            var string = $(this).val();
+            searchStringAjax = string;
+            getToController();
+        });
+
+        $('#filterLoaiphong').change(function () {
+            var string = $(this).val();
+            filterLoaiphongAjax = string;
+            getToController();
+        });
+
+        $('#filterCoso').change(function () {
+            var string = $(this).val();
+            filterCosoAjax = string;
+            getToController();
+        });
+
+        function getToController() {
+            $.ajax({
+                url: '/admin/Phong/Index',
+                type: 'GET',
+                data: {
+                    searchStringController: searchStringAjax,
+                    filterLoaiphongController: filterLoaiphongAjax,
+                    filterCosoController: filterCosoAjax,
+                },
+                success: function (response) {
+                    $('#PartialViewPhong').html(response);
+                },
+                error: function () {
+                    console.log("fail");
+                }
+            });
+        }
+
+        setTimeout(function () {
+            console.log("here");
+            $('.notify').css("display", "none");
+        }, 10000);
+    });
+
+</script>
+@section naviheader{
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Danh sách phòng</li>
+            </ol>
+        </nav>
+    </div>
+}
+
+@if (TempData["Action"] != null)
+{
+    <div class="alert alert-success notify">
+        <strong>Success!</strong> @TempData["Action"]
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger notify">
+        <strong>Error!</strong> @TempData["ErrorMessage"]
+    </div>
+}
+
+@section searchArea{
+    <div class="input-group" style="width:80%">
+        <!-- Search bar -->
+        <input style="width:30%" name="searchStringPhong" id="searchString"
+               type="search" placeholder="Tìm tên phòng" class="form-control rounded" aria-label="Search">
+        @*Id la thuoc tinh phan biet cac html tag*@
+        <button class="btn btn-info rounded" type="submit" id="Searchbutton">
+            <svg class="icon icon-lg">
+                <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-search")"></use>
+            </svg>
+        </button>
+        <!-- Filter dropdown 1 -->
+        <select id="filterCoso" class="form-select rounded ms-3" style="width:10%">
+            <option value="">Chọn cơ sở</option>
+            @foreach (var item in ViewBag.Coso)
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+
+
+
+        <select id="filterLoaiphong" class="form-select rounded ms-3" style="width:10%">
+            <option value="">Chọn loại phòng</option>
+            @{
+                foreach (SelectListItem item in ViewBag.RoomTypes)
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            }
+        </select>
+    </div>
+}
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col">
+                <h3 class="card-title">Danh sách phòng</h3>
+            </div>
+            <div class="col-auto">
+                <div class="card-tools">
+                    <a asp-action="Create" class="btn btn-primary btn-sm">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-plus")"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="bs-stepper linear">
+            <div class="bs-stepper-content">
+
+                <div id="PartialViewPhong">
+                <partial name="PartialViewPhong" model="Model" />
+                </div>
+               
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer"></div>

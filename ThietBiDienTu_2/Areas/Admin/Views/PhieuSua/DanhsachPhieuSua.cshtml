@@ -1,0 +1,147 @@
+﻿@model X.PagedList.IPagedList<Phieusua>
+@section naviheader{
+    <div class="header-divider"></div>
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Admin/HomeAdmin/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Danh sách phiếu sửa</li>
+            </ol>
+        </nav>
+    </div>
+}
+
+@section searchArea{
+    <div style="width:85%" class="d-none d-md-flex align-items-center mb-2">
+        <div class="input-group" style="width:35%">
+            <!-- Search bar -->
+            <input name="searchString" id="searchString_2" type="number" placeholder="Tìm mã phiếu sửa..." class="form-control rounded" aria-label="Search">
+            <button class="btn btn-info rounded mr-2" type="submit" id="btnSearch_2">
+                <svg class="icon icon-lg">
+                    <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-search")"></use>
+                </svg>
+            </button>
+        </div>
+
+        <select class="rounded-2 form-select" style="width:19%" id="SelectState">
+            <option value="-1">Chọn trạng thái</option>
+            <option value="0">Đang sửa</option>
+            <option value="1">Đã sửa</option>
+
+        </select>
+        <div class="form-group mb-0 ml-2" style="width:15%">
+            <label class="mb-1"><strong>Ngày lập từ</strong></label>
+            <input type="date" class="form-control" id="CreateFrom" min="2024-03-01">
+        </div>
+        <div class="form-group mb-0 ml-2" style="width:15%">
+            <label class="mb-1"><strong>Ngày lập đến</strong></label>
+            <input type="date" class="form-control" id="CreateTo" min="2024-03-01" />
+        </div>
+
+    </div>
+}
+<script>
+    $(document).ready(function () {
+        var viewState = '@ViewBag.viewState';
+        if (viewState != "") {
+            $('#SelectState').val(viewState);
+        }
+        setTimeout(function () {
+            console.log("here");
+            $('.notify').css("display", "none");
+        }, 10000);
+
+        var searchStringView = $('#searchString_2').val();
+        var trangthaiView = $('#SelectState').val();
+        var ngaylaptuView = $('#CreateFrom').val();
+        var ngaylapdenView = $('#CreateTo').val();
+
+        $('#searchString_2').change(function () {
+            searchStringView = $(this).val();
+            getToFilter();
+        });
+
+        $('#btnSearch_2').click(function () {
+            searchStringView = $('#searchString_2').val();
+            getToFilter();
+        });
+
+        $('#SelectState').change(function () {
+            trangthaiView = $(this).val();
+            getToFilter();
+        });
+
+        $('#CreateFrom').change(function () {
+            ngaylaptuView = $(this).val();
+            getToFilter();
+        });
+
+        $('#CreateTo').change(function () {
+            ngaylapdenView = $(this).val();
+            getToFilter();
+        });
+
+        function getToFilter() {
+            $.ajax({
+                url: '/admin/Phieusua/DanhsachPhieuSua',
+                type: 'Get',
+                data: {
+                    page: 1,
+                    searchString: searchStringView,
+                    trangthai: trangthaiView,
+                    NgaylapTu: ngaylaptuView,
+                    NgaylapDen: ngaylapdenView
+                },
+                success: function (response) {
+                    $('#partialDs').html(response);
+                }
+            });
+        }
+    });
+</script>
+
+
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-success notify">
+        <strong>Thành công!</strong> @TempData["AlertMessage"]
+    </div>
+}
+@if (TempData["AlertMessageFail"] != null)
+{
+    <div class="alert alert-danger notify">
+        <strong>Thất bại!</strong> @TempData["AlertMessageFail"]
+    </div>
+}
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col">
+                <h3 class="card-title">Danh sách phiếu sửa</h3>
+            </div>
+            <div class="col-auto">
+                <div class="card-tools">
+                    <a asp-action="CreatePs" class="btn btn-primary btn-sm">
+                        <svg class="icon icon-lg">
+                            <use xlink:href="@Url.Content("~/LayoutAdmin/dist/vendors/_coreui/icons/svg/free.svg#cil-plus")"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div id="content_2">
+
+
+            <div class="bs-stepper linear">
+                <div class="bs-stepper-content">
+                    <div id="partialDs">
+                    <partial name="PartialViewDSPhieuSua" model="Model"/>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
